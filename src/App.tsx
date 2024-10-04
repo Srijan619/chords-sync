@@ -9,6 +9,10 @@ interface Lyric {
   text: string;
 }
 
+const title = "Sparsha sangeet";
+const artist = "Purna Rai";
+const albumArtUrl =
+  "https://e-cdn-images.dzcdn.net/images/cover/6356360ed951c3ff4e8b516b0e31ef58/500x500-000000-80-0-0.jpg";
 const lyrics: Lyric[] = [
   { lyricalTime: 28, chordTime: 28.5, text: "गाजलु तिम्रा आँखा," },
   { lyricalTime: 32, chordTime: 32.5, text: "लजालु भाका तिम्रा" },
@@ -67,39 +71,6 @@ const App: React.FC = () => {
   const lyricsRef = useRef<HTMLDivElement | null>(null);
   const [currentLine, setCurrentLine] = useState<number>(0);
   const [chords, setChords] = useState<{ [key: number]: string }>({});
-  const [player, setPlayer] = useState<any>(null); // Store YouTube player reference
-
-  const opts: YouTube.Opts = {
-    height: "150",
-    width: "250",
-    playerVars: {
-      autoplay: 1,
-    },
-  };
-
-  const handleVideoProgress = () => {
-    if (player) {
-      setCurrentTime(player.getCurrentTime());
-    }
-  };
-
-  // Poll current time every 500ms while playing
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (player) {
-      interval = setInterval(() => {
-        handleVideoProgress();
-      }, 500);
-    }
-
-    return () => {
-      clearInterval(interval); // Clear interval on unmount
-    };
-  }, [player]);
-
-  const onPlayerReady = (event: any) => {
-    setPlayer(event.target); // Store player reference
-  };
 
   useEffect(() => {
     const line =
@@ -146,17 +117,12 @@ const App: React.FC = () => {
     fetchChords();
   }, []);
 
+  const handleTimeUpdate = (currentTime: number) => {
+    setCurrentTime(currentTime);
+  };
+
   return (
     <div className="App">
-      <AudioPlayer
-        videoId="s-ln780yJpI"
-        onPlayerReady={(event) => {
-          // You can set the current time or other properties here if needed
-          // event.target.getDuration() to get the duration, etc.
-        }}
-        currentTime={currentTime}
-        setCurrentTime={setCurrentTime} // Pass the state setter
-      />
       <div className="lyrics-container" ref={lyricsRef}>
         {lyrics.map((lyric, index) => (
           <p
@@ -167,6 +133,12 @@ const App: React.FC = () => {
           </p>
         ))}
       </div>
+      <AudioPlayer
+        title={title}
+        artist={artist}
+        albumArtUrl={albumArtUrl}
+        onTimeUpdate={handleTimeUpdate}
+      />
     </div>
   );
 };

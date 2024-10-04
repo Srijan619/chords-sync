@@ -10,6 +10,7 @@
 }
 
 .audio-player__episode_title {
+  display: flex;
   font-size: 28px;
   font-weight: bold;
   line-height: 1.5;
@@ -20,6 +21,7 @@
 }
 
 .audio-player__title {
+  display: flex;
   margin-top: 10px;
   text-transform: uppercase;
   font-size: 11px;
@@ -72,6 +74,7 @@
   border: none;
   cursor: pointer;
   outline: none;
+  margin-top: 1rem;
 }
 
 .audio-player__play-button {
@@ -107,8 +110,8 @@
 /*Seek bar customization*/
 
 :root {
-  --color-fill: #16a085;
-  --font-size: 16px;
+  --color-fill: rgb(59 122 171 / 80%);
+  --font-size: 14px;
 
   --color-default: rgba(255, 255, 255, 0.5);
   --color-hover: rgba(255, 255, 255, 0.7);
