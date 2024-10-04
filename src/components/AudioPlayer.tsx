@@ -12,11 +12,12 @@ interface AudioPlayerProps {
   title: string;
   artist: string;
   albumArtUrl: string;
+  videoId: string;
   onTimeUpdate: (currentTime: number) => void;
 }
 
 const AudioPlayer = forwardRef<HTMLDivElement, AudioPlayerProps>(
-  ({ title, artist, albumArtUrl, onTimeUpdate }, ref) => {
+  ({ title, artist, albumArtUrl, videoId, onTimeUpdate }, ref) => {
     const playerRef = useRef<any>(null);
     const playing = useRef(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -137,7 +138,7 @@ const AudioPlayer = forwardRef<HTMLDivElement, AudioPlayerProps>(
           <div className="audio-player__meta">
             <YouTube
               className="youtube-player"
-              videoId="s-ln780yJpI"
+              videoId={videoId}
               opts={opts}
               onReady={onReady}
               onStateChange={onStateChange}
