@@ -1,0 +1,29 @@
+.App {
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+}
+
+.lyrics-container {
+  max-height: 600px;
+  overflow-y: scroll;
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.lyric-line {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.lyric-line.active {
+  color: #ff6347;
+  font-weight: bold;
+}
+
+.video-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+}
