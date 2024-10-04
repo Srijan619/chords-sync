@@ -80,14 +80,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
     }
   };
 
-  const formatTime = (currentTime: number, duration: number) => {
-    const format = (time: number) => {
-      const minutes = Math.floor(time / 60);
-      const seconds = Math.floor(time % 60);
-      return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-    };
-
-    return `${format(currentTime)} / ${format(duration)}`;
+  const format = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
   };
 
   const reset = () => {
@@ -130,13 +126,17 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                 type="range"
                 min={0}
                 max={100}
-                value={(currentTime / duration) * 100}
+                value={
+                  currentTime && duration ? (currentTime / duration) * 100 : 0
+                }
                 onChange={handleSeek}
                 className="seek-bar"
               />
             </div>
-            <div className="time-display">
-              {formatTime(currentTime, duration)}
+            <div className="time-display" role="timer" aria-live="off">
+              <span>{format(currentTime)}</span>
+              <span> | </span>
+              <span>{format(duration)}</span>
             </div>
           </div>
           <a href="#" className="artwork">

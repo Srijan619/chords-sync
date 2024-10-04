@@ -1,6 +1,8 @@
 .container {
-  width: 800px;
-  margin: 30px auto;
+  width: 100vw;
+  margin-top: 20rem;
+  position: fixed;
+  bottom: 0;
 }
 
 .audio-player {
@@ -45,16 +47,32 @@
 
 .artwork img {
   border-radius: 3px;
-  width: 150px;
-  height: 150px;
+  width: 10rem;
+  height: 10rem;
   box-shadow: 0 4px 6px 0 hsla(0, 0%, 0%, 0.1);
   margin-bottom: -80px;
+  transition:
+    width 1s,
+    height 1s,
+    ease-out 1s;
+}
+
+@media (max-width: 600px) {
+  .artwork img {
+    width: 4rem;
+    height: 4rem;
+    transition:
+      width 1s,
+      height 1s,
+      ease-in 1s;
+  }
 }
 
 .controls {
   display: flex;
   align-items: center;
-  width: 80%;
+  width: 90%;
+  margin-top: 1rem;
 }
 
 .audio-player__play {
@@ -102,6 +120,7 @@
   flex-grow: 1;
   color: #777;
   font-weight: normal;
+  min-width: 5rem;
 }
 
 .youtube-player {
