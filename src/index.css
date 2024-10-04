@@ -11,6 +11,12 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --color-fill: #ff6347;
+  --font-size: 9px;
+
+  --color-default: rgba(255, 255, 255, 0.5);
+  --color-hover: rgba(255, 255, 255, 0.7);
+  --color-active: rgba(255, 255, 255, 1);
 }
 
 @media (prefers-color-scheme: light) {

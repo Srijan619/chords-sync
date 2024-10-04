@@ -11,16 +11,27 @@
   margin-top: 20px;
   padding: 10px;
   border-radius: 5px;
+  width: 100%;
+}
+
+.lyrics-container::-webkit-scrollbar {
+  display: none;
 }
 
 .lyric-line {
   font-size: 18px;
   line-height: 1.5;
+  cursor: pointer;
+  opacity: 0.4;
+  transition:
+    transform 1s ease-in-out,
+    opacity 1s ease-in-out;
 }
-
 .lyric-line.active {
-  color: #ff6347;
+  color: var(--color-fill);
   font-weight: bold;
+  opacity: 1;
+  transform: scale(1.2);
 }
 
 .video-container {

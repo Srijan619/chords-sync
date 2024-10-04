@@ -14,6 +14,7 @@ const artist = "Purna Rai";
 const albumArtUrl =
   "https://e-cdn-images.dzcdn.net/images/cover/6356360ed951c3ff4e8b516b0e31ef58/500x500-000000-80-0-0.jpg";
 const lyrics: Lyric[] = [
+  { lyricalTime: 0, chordTime: 0, text: "Intro Music.." },
   { lyricalTime: 28, chordTime: 28.5, text: "गाजलु तिम्रा आँखा," },
   { lyricalTime: 32, chordTime: 32.5, text: "लजालु भाका तिम्रा" },
   { lyricalTime: 36, chordTime: 36.5, text: "अड्कल नै गर्न गाह्रो," },
@@ -65,12 +66,17 @@ const lyrics: Lyric[] = [
   },
 ];
 
-const LYRIC_LATENCY = 0.02;
+const LYRIC_LATENCY = -0.5; // TODO: Could be something to allow as configurable such that user can handle themseves?
 const App: React.FC = () => {
   const [currentTime, setCurrentTime] = useState<number>(0);
   const lyricsRef = useRef<HTMLDivElement | null>(null);
   const [currentLine, setCurrentLine] = useState<number>(0);
   const [chords, setChords] = useState<{ [key: number]: string }>({});
+  const audioPlayerRef = useRef<{
+    play: () => void;
+    pause: () => void;
+    seekTo: (newTime: number) => void;
+  }>(null);
 
   useEffect(() => {
     const line =
@@ -121,6 +127,13 @@ const App: React.FC = () => {
     setCurrentTime(currentTime);
   };
 
+  const handleLyricClick = (lyric: Lyric) => {
+    console.log("Clicking indivudal lyric", lyric);
+    setCurrentTime(lyric.lyricalTime);
+    audioPlayerRef.current?.seekTo(lyric.lyricalTime);
+    audioPlayerRef.current?.play();
+  };
+
   return (
     <div className="App">
       <div className="lyrics-container" ref={lyricsRef}>
@@ -128,12 +141,14 @@ const App: React.FC = () => {
           <p
             key={index}
             className={`lyric-line ${index === currentLine ? "active" : ""}`}
+            onClick={() => handleLyricClick(lyric)}
           >
             {lyric.text} - {chords[lyric.chordTime]}
           </p>
         ))}
       </div>
       <AudioPlayer
+        ref={audioPlayerRef}
         title={title}
         artist={artist}
         albumArtUrl={albumArtUrl}
