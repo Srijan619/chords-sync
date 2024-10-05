@@ -3,29 +3,7 @@ import YoutubeAudioPlayer from "./components/YoutubeAudioPlayer";
 import LyricsDisplay from "./components/LyricsDisplay";
 import { SparshaSangeet, VananaMatra, HajarJanma } from "./testSongs";
 import "./App.css";
-
-// Lyrics with timestamps
-export interface Lyric {
-  lyricalTime: number;
-  chordTime: number;
-  text: string;
-  chord?: ChordInfo | null;
-}
-
-export interface Song {
-  title: string;
-  artist: string;
-  albumArtUrl: string;
-  videoId: string;
-  lyrics: Lyric[];
-}
-
-interface ChordInfo {
-  timestamp: number;
-  pitched_common_mame: string;
-  pitches: string[];
-  chord_name: string;
-}
+import type { ChordInfo, SongInfoApiResponse, Song, Lyric } from "./types";
 
 const LYRIC_LATENCY = -0.5; // TODO: Could be something to allow as configurable such that user can handle themseves?
 const App: React.FC = () => {
@@ -40,7 +18,19 @@ const App: React.FC = () => {
 
   // Switch song logic
   // @ts-ignore
-  window.switchSong = () => {
+  window.switchSong = (videoId: string) => {
+    if (videoId) {
+      const song: Song = {
+        title: "Test",
+        albumArtUrl: "",
+        artist: "Test User",
+        videoId: "",
+        lyrics: [],
+      };
+      song.videoId = videoId;
+      setSong(song);
+      return;
+    }
     if (song === SparshaSangeet) setSong(VananaMatra);
     else if (song === VananaMatra) setSong(HajarJanma);
     else setSong(SparshaSangeet);
@@ -62,16 +52,22 @@ const App: React.FC = () => {
         const response = await fetch(
           "http://localhost:5000/api/chords/" + song.videoId,
         );
-        const data: ChordInfo[] = await response.json();
-        const updatedLyrics = mapChordsToLyrics(song.lyrics, data);
-        console.log("🎸 Updated Lyrics with Chords", updatedLyrics);
-        setSong((prevSong) => ({ ...prevSong, lyrics: updatedLyrics }));
+        const data: SongInfoApiResponse = await response.json();
+        const updatedLyrics = mapChordsToLyrics(song.lyrics, data.chords);
+        console.log("🎸 Updated Lyrics with Chords", data);
+        setSong((prevSong) => ({
+          ...prevSong,
+          lyrics: updatedLyrics,
+          tempo: data.tempo,
+          key: data.key,
+          time_signature: data.time_signature,
+        }));
       } catch (error) {
         console.error("Error fetching chords:", error);
       }
     };
     fetchChords();
-  }, [song.lyrics]);
+  }, [song.videoId]);
 
   const handleTimeUpdate = (time: number) => setCurrentTime(time);
 
@@ -108,10 +104,7 @@ const App: React.FC = () => {
       />
       <YoutubeAudioPlayer
         ref={audioPlayerRef}
-        title={song.title}
-        artist={song.artist}
-        albumArtUrl={song.albumArtUrl}
-        videoId={song.videoId}
+        song={song}
         onTimeUpdate={handleTimeUpdate}
       />
     </div>

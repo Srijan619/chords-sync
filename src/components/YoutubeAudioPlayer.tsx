@@ -7,12 +7,10 @@ import React, {
 } from "react";
 import YouTube from "react-youtube";
 import "../AudioPlayer.css"; // Import your custom styles
+import { Song } from "../types";
 
 interface AudioPlayerProps {
-  title: string;
-  artist: string;
-  albumArtUrl: string;
-  videoId: string;
+  song: Song;
   onTimeUpdate: (currentTime: number) => void;
 }
 
@@ -23,7 +21,8 @@ type AudioPlayerControls = {
 };
 
 const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
-  ({ title, artist, albumArtUrl, videoId, onTimeUpdate }, ref) => {
+  ({ song, onTimeUpdate }, ref) => {
+    const { title, artist, albumArtUrl, videoId, key, tempo } = song;
     const playerRef = useRef<any>(null);
     const playing = useRef(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -137,13 +136,21 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
     return (
       <div className="container">
         <div className="audio-player">
-          <h3 className="audio-player__episode_title">{title}</h3>
-          <h5 className="audio-player__title">
-            <i>{artist}</i>
-          </h5>
+          <div className="audio-meta-container">
+            <h3 className="audio-player__episode_title">{title}</h3>
+            <p className="audio-player__title">
+              <i>{artist}</i>
+            </p>
+            {tempo && (
+              <b className="audio-player__title">Tempo: {tempo.tempo} BPM</b>
+            )}
+            {key?.key_name && (
+              <b className="audio-player__title">Key: {key.key_name}</b>
+            )}
+          </div>
           <div className="audio-player__meta">
             <YouTube
-              className="youtube-player"
+              className="youtube-player-hidden"
               videoId={videoId}
               opts={opts}
               onReady={onReady}
