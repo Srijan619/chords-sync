@@ -150,14 +150,17 @@ const AudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
               onStateChange={onStateChange}
             />
             <div className="controls">
-              <button className="audio-player__play" onClick={handlePlayPause}>
-                {playing.current ? (
-                  <span className="audio-player__pause-button"></span>
-                ) : (
-                  <span className="audio-player__play-button"></span>
-                )}
-              </button>
               <div className="progress-container">
+                <button
+                  className="audio-player__play"
+                  onClick={handlePlayPause}
+                >
+                  {playing.current ? (
+                    <span className="audio-player__pause-button"></span>
+                  ) : (
+                    <span className="audio-player__play-button"></span>
+                  )}
+                </button>
                 <div className="time-display-current">
                   {format(currentTime)}
                 </div>
