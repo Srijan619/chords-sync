@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import AudioPlayer from "./components/AudioPlayer";
-import { SparshaSangeet } from "./testSongs/sparshaSangeet";
-import { VananaMatra } from "./testSongs/VananaMatra";
+import { SparshaSangeet, VananaMatra, HajarJanma } from "./testSongs";
 import "./App.css";
 
 // Lyrics with timestamps
@@ -9,6 +8,7 @@ export interface Lyric {
   lyricalTime: number;
   chordTime: number;
   text: string;
+  chord?: ChordInfo | null;
 }
 
 export interface Song {
@@ -19,13 +19,19 @@ export interface Song {
   lyrics: Lyric[];
 }
 
+interface ChordInfo {
+  timestamp: number;
+  pitched_common_mame: string;
+  pitches: string[];
+  chord_name: string;
+}
+type ChordsState = ChordInfo[];
 const LYRIC_LATENCY = -0.5; // TODO: Could be something to allow as configurable such that user can handle themseves?
 const App: React.FC = () => {
-  const [song, setSong] = useState<Song>(VananaMatra);
+  const [song, setSong] = useState<Song>(HajarJanma);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const lyricsRef = useRef<HTMLDivElement | null>(null);
   const [currentLine, setCurrentLine] = useState<number>(0);
-  const [chords, setChords] = useState<{ [key: number]: string }>({});
   const audioPlayerRef = useRef<{
     play: () => void;
     pause: () => void;
@@ -37,10 +43,11 @@ const App: React.FC = () => {
   window.switchSong = () => {
     if (song === SparshaSangeet) {
       setSong(VananaMatra);
+    } else if (song === VananaMatra) {
+      setSong(HajarJanma);
     } else {
       setSong(SparshaSangeet);
     }
-    console.log("Current Song:", song);
   };
 
   useEffect(() => {
@@ -62,24 +69,15 @@ const App: React.FC = () => {
     // Fetch chords data from the backend
     const fetchChords = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/notes");
-        const data = await response.json();
+        const response = await fetch("http://localhost:5000/api/chords");
+        const data: ChordsState = await response.json();
+        // Map the fetched chords to the existing lyrics
+        const updatedLyrics = mapChordsToLyrics(song.lyrics, data);
 
-        // Log the data to check API response
-        console.log("Chord data from API:", data);
-
-        // Set chords state with rounded timestamps
-        const roundedChords = Object.entries(data).reduce(
-          (acc, [key, value]) => {
-            const roundedKey = Math.round(parseFloat(key) * 2) / 2; // Round to nearest 0.5 seconds
-            acc[roundedKey] = value as string;
-            return acc;
-          },
-          {} as Record<number, string>,
-        );
-
-        console.log("Rounded chords..", roundedChords);
-        setChords(roundedChords);
+        setSong((prevSong) => ({
+          ...prevSong,
+          lyrics: updatedLyrics, // Update the lyrics
+        }));
       } catch (error) {
         console.error("Error fetching chords data:", error);
       }
@@ -90,6 +88,24 @@ const App: React.FC = () => {
 
   const handleTimeUpdate = (currentTime: number) => {
     setCurrentTime(currentTime);
+  };
+
+  const mapChordsToLyrics = (lyrics: Lyric[], chords: ChordInfo[]): Lyric[] => {
+    return lyrics.map((lyric) => {
+      // Find the corresponding chord based on the chord time
+      const chordInfo =
+        chords.find(
+          (chord) =>
+            Math.round(chord.timestamp * 2) / 2 ===
+            Math.round(lyric.chordTime * 2) / 2,
+        ) || null;
+
+      // Return updated lyric with corresponding chord
+      return {
+        ...lyric,
+        chord: chordInfo, // Set chord to found chord info or null
+      };
+    });
   };
 
   const handleLyricClick = (lyric: Lyric) => {
@@ -108,7 +124,7 @@ const App: React.FC = () => {
             className={`lyric-line ${index === currentLine ? "active" : ""}`}
             onClick={() => handleLyricClick(lyric)}
           >
-            {lyric.text} - {chords[lyric.chordTime]}
+            {lyric.text} - {lyric.chord?.chord_name}
           </p>
         ))}
       </div>
