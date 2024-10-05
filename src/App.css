@@ -8,10 +8,10 @@
 .lyrics-container {
   max-height: 600px;
   overflow-y: scroll;
-  margin-top: 20px;
   padding: 10px;
   border-radius: 5px;
   width: 100%;
+  max-height: 60vh;
 }
 
 .lyrics-container::-webkit-scrollbar {
