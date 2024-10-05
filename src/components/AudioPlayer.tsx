@@ -152,6 +152,10 @@ const AudioPlayer = forwardRef<HTMLDivElement, AudioPlayerProps>(
                 )}
               </button>
               <div className="progress-container">
+                <div className="time-display-current">
+                  {format(currentTime)}
+                </div>
+
                 <input
                   type="range"
                   min={0}
@@ -163,11 +167,7 @@ const AudioPlayer = forwardRef<HTMLDivElement, AudioPlayerProps>(
                   className="seek-bar"
                   style={inputStyle}
                 />
-              </div>
-              <div className="time-display" role="timer" aria-live="off">
-                <span>{format(currentTime)}</span>
-                <span> | </span>
-                <span>{format(duration)}</span>
+                <div className="time-display-duration">{format(duration)}</div>
               </div>
             </div>
             <a href="#" className="artwork">
