@@ -10,7 +10,7 @@ const calculateLyricsWithTimes = (
   lyrics: string[],
 ) => {
   return lyrics.map((text, index) => {
-    const lyricalTime = LYRICAL_STARTING_TIME + index * LYRICAL_INTERVAL; // Calculate lyrical time
+    const lyricalTime = startingTime + index * LYRICAL_INTERVAL; // Calculate lyrical time
     const chordTime = lyricalTime + 0.5; // Chord time is slightly after lyrical time
     return { lyricalTime, chordTime, text };
   });
