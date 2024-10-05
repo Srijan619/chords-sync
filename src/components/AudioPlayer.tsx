@@ -16,7 +16,13 @@ interface AudioPlayerProps {
   onTimeUpdate: (currentTime: number) => void;
 }
 
-const AudioPlayer = forwardRef<HTMLDivElement, AudioPlayerProps>(
+type AudioPlayerControls = {
+  play: () => void;
+  pause: () => void;
+  seekTo: (time: number) => void;
+};
+
+const AudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
   ({ title, artist, albumArtUrl, videoId, onTimeUpdate }, ref) => {
     const playerRef = useRef<any>(null);
     const playing = useRef(false);
@@ -63,7 +69,7 @@ const AudioPlayer = forwardRef<HTMLDivElement, AudioPlayerProps>(
     };
 
     const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newTime = (e.target.value / 100) * duration;
+      const newTime = (Number(e.target.value) / 100) * duration;
       seekTo(newTime);
     };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, Children } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import AudioPlayer from "./components/AudioPlayer";
 import { SparshaSangeet } from "./testSongs/sparshaSangeet";
 import { VananaMatra } from "./testSongs/VananaMatra";
@@ -22,7 +22,7 @@ export interface Song {
 const LYRIC_LATENCY = -0.5; // TODO: Could be something to allow as configurable such that user can handle themseves?
 const App: React.FC = () => {
   const [song, setSong] = useState<Song>(VananaMatra);
-  const [currentTime, setCurrentTime] = useState<number>(93);
+  const [currentTime, setCurrentTime] = useState<number>(0);
   const lyricsRef = useRef<HTMLDivElement | null>(null);
   const [currentLine, setCurrentLine] = useState<number>(0);
   const [chords, setChords] = useState<{ [key: number]: string }>({});
@@ -33,6 +33,7 @@ const App: React.FC = () => {
   }>(null);
 
   // Util for testing switching songs...
+  // @ts-ignore
   window.switchSong = () => {
     if (song === SparshaSangeet) {
       setSong(VananaMatra);
@@ -71,7 +72,7 @@ const App: React.FC = () => {
         const roundedChords = Object.entries(data).reduce(
           (acc, [key, value]) => {
             const roundedKey = Math.round(parseFloat(key) * 2) / 2; // Round to nearest 0.5 seconds
-            acc[roundedKey] = value;
+            acc[roundedKey] = value as string;
             return acc;
           },
           {} as Record<number, string>,
