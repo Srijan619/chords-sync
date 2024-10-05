@@ -27,10 +27,11 @@ export interface TimeSignatureInfo {
 }
 
 export interface Song {
+  id: number;
   title: string;
   artist: string;
-  albumArtUrl: string;
-  videoId: string;
+  album_art_url: string;
+  video_id: string;
   lyrics: Lyric[];
   tempo?: TempoInfo;
   key?: KeyInfo;

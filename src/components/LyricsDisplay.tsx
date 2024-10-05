@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { Lyric } from "../App";
+import { Lyric } from "../types";
 
 interface LyricsDisplayProps {
   lyrics: Lyric[];

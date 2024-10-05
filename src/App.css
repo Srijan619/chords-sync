@@ -39,3 +39,24 @@
   top: 0;
   right: 0;
 }
+
+ul {
+  list-style-type: none; /* Remove default list styling */
+  padding: 0; /* Remove default padding */
+  margin: 0; /* Remove default margin */
+}
+
+li {
+  padding: 10px 15px; /* Add some padding for better touch targets */
+  cursor: pointer; /* Show pointer cursor on hover */
+  transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+li:hover {
+  background-color: var(--color-fill); /* Highlight color on hover */
+}
+
+.song-selected {
+  background-color: var(--color-fill); /* Highlight for selected song */
+  color: white; /* Change text color for better contrast */
+}

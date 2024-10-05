@@ -4,10 +4,12 @@ import LyricsDisplay from "./components/LyricsDisplay";
 import { SparshaSangeet, VananaMatra, HajarJanma } from "./testSongs";
 import "./App.css";
 import type { ChordInfo, SongInfoApiResponse, Song, Lyric } from "./types";
+import { calculateLyricsWithTimes } from "./utils/transformLyrics";
 
-const LYRIC_LATENCY = -0.5; // TODO: Could be something to allow as configurable such that user can handle themseves?
+const LYRIC_LATENCY = -0.5; // TODO: Make configurable
 const App: React.FC = () => {
-  const [song, setSong] = useState<Song>(HajarJanma);
+  const [selectedSong, setSelectedSong] = useState<Song | null>(null); // Use state for selected song
+  const [songs, setSongs] = useState<Song[]>([]);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [currentLine, setCurrentLine] = useState<number>(0);
   const audioPlayerRef = useRef<{
@@ -16,58 +18,67 @@ const App: React.FC = () => {
     seekTo: (newTime: number) => void;
   }>(null);
 
-  // Switch song logic
-  // @ts-ignore
-  window.switchSong = (videoId: string) => {
-    if (videoId) {
-      const song: Song = {
-        title: "Test",
-        albumArtUrl: "",
-        artist: "Test User",
-        videoId: "",
-        lyrics: [],
-      };
-      song.videoId = videoId;
-      setSong(song);
-      return;
-    }
-    if (song === SparshaSangeet) setSong(VananaMatra);
-    else if (song === VananaMatra) setSong(HajarJanma);
-    else setSong(SparshaSangeet);
-  };
+  useEffect(() => {
+    const fetchSongs = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/songs");
+        const data: Song[] = await response.json();
+        setSongs(data);
+      } catch (error) {
+        console.error("Error fetching songs:", error);
+      }
+    };
+
+    fetchSongs();
+  }, []);
 
   useEffect(() => {
+    if (!selectedSong?.lyrics) return;
+
     const line =
-      song.lyrics.findIndex(
+      selectedSong.lyrics.findIndex(
         (lyric) => lyric.lyricalTime > currentTime - LYRIC_LATENCY,
       ) - 1;
+
     if (line !== currentLine && line >= 0) {
       setCurrentLine(line);
     }
-  }, [currentTime, currentLine, song.lyrics]);
+  }, [currentTime, currentLine, selectedSong]);
 
+  // Fetch chords for the selected song
   useEffect(() => {
+    if (!selectedSong) return; // Do nothing if no song is selected
+
     const fetchChords = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/chords/" + song.videoId,
+          "http://localhost:5000/api/chords/" + selectedSong.video_id,
         );
         const data: SongInfoApiResponse = await response.json();
-        const updatedLyrics = mapChordsToLyrics(song.lyrics, data.chords);
-        console.log("🎸 Updated Lyrics with Chords", data);
-        setSong((prevSong) => ({
-          ...prevSong,
-          lyrics: updatedLyrics,
-          tempo: data.tempo,
-          key: data.key,
-          time_signature: data.time_signature,
-        }));
+
+        const updatedLyrics = mapChordsToLyrics(
+          selectedSong.lyrics,
+          data.chords,
+        );
+
+        setSelectedSong((prevSong) =>
+          prevSong
+            ? {
+              ...prevSong,
+              lyrics: updatedLyrics,
+              tempo: data.tempo,
+              key: data.key,
+              time_signature: data.time_signature,
+            }
+            : null,
+        );
       } catch (error) {
         console.error("Error fetching chords:", error);
       }
     };
+
     fetchChords();
-  }, [song.videoId]);
+  }, [selectedSong]);
 
   const handleTimeUpdate = (time: number) => setCurrentTime(time);
 
@@ -94,19 +105,49 @@ const App: React.FC = () => {
       return { ...lyric, chord: chordInfo };
     });
 
+  const handleSongSelect = (song: Song) => {
+    const formattedLyrics = calculateLyricsWithTimes(
+      0,
+      4,
+      song.lyrics.toString(),
+    );
+    setSelectedSong({
+      ...song,
+      lyrics: formattedLyrics, // Add the formatted lyrics directly
+    });
+    setCurrentLine(0);
+    setCurrentTime(0);
+  };
+
   return (
     <div className="App">
-      <LyricsDisplay
-        lyrics={song.lyrics}
-        currentLine={currentLine}
-        onSeekToAndPlay={seekToAndPlay}
-        onSeekToAndLyricPlay={seekToAndLyricPlay}
-      />
-      <YoutubeAudioPlayer
-        ref={audioPlayerRef}
-        song={song}
-        onTimeUpdate={handleTimeUpdate}
-      />
+      <ul>
+        {songs.map((song) => (
+          <li
+            key={song.id}
+            onClick={() => handleSongSelect(song)}
+            className={selectedSong?.id === song.id ? "song-selected" : ""}
+          >
+            {song.title} by {song.artist}
+          </li>
+        ))}
+      </ul>
+
+      {selectedSong && (
+        <>
+          <LyricsDisplay
+            lyrics={selectedSong.lyrics}
+            currentLine={currentLine}
+            onSeekToAndPlay={seekToAndPlay}
+            onSeekToAndLyricPlay={seekToAndLyricPlay}
+          />
+          <YoutubeAudioPlayer
+            ref={audioPlayerRef}
+            song={selectedSong}
+            onTimeUpdate={handleTimeUpdate}
+          />
+        </>
+      )}
     </div>
   );
 };

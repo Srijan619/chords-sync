@@ -22,7 +22,7 @@ type AudioPlayerControls = {
 
 const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
   ({ song, onTimeUpdate }, ref) => {
-    const { title, artist, albumArtUrl, videoId, key, tempo } = song;
+    const { title, artist, album_art_url, video_id, key, tempo } = song;
     const playerRef = useRef<any>(null);
     const playing = useRef(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -151,7 +151,7 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
           <div className="audio-player__meta">
             <YouTube
               className="youtube-player-hidden"
-              videoId={videoId}
+              videoId={video_id}
               opts={opts}
               onReady={onReady}
               onStateChange={onStateChange}
@@ -187,7 +187,7 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
               </div>
             </div>
             <a href="#" className="artwork">
-              <img src={`${albumArtUrl}`} alt="Audio Artwork" />
+              <img src={`${album_art_url}`} alt="Audio Artwork" />
             </a>
           </div>
         </div>

@@ -1,20 +1,8 @@
-import type { Song } from "../App";
+import type { Song } from "../types";
+import { calculateLyricsWithTimes } from "../utils/transformLyrics";
 
-// Define constants for the song
 const LYRICAL_STARTING_TIME = 11; // The starting time in seconds
 const LYRICAL_INTERVAL = 4; // The time gap in seconds between each lyric entry
-
-// Function to calculate all lyric times based on provided lyrics
-const calculateLyricsWithTimes = (
-  startingTime: number = 0,
-  lyrics: string[],
-) => {
-  return lyrics.map((text, index) => {
-    const lyricalTime = startingTime + index * LYRICAL_INTERVAL; // Calculate lyrical time
-    const chordTime = lyricalTime + 0.5; // Chord time is slightly after lyrical time
-    return { lyricalTime, chordTime, text };
-  });
-};
 
 const song: Song = {
   title: "Hajar Janma",
@@ -24,7 +12,7 @@ const song: Song = {
   videoId: "iavYg5-ZwTc",
   lyrics: [
     { lyricalTime: 0, chordTime: 0, text: "Intro Music.." }, // Musical introduction
-    ...calculateLyricsWithTimes(LYRICAL_STARTING_TIME, [
+    ...calculateLyricsWithTimes(LYRICAL_STARTING_TIME, LYRICAL_INTERVAL, [
       "तिम्रो लागि एक होइन",
       "हजारै जन्म पनि लिउला म",
       "म............",
