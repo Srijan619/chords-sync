@@ -5,9 +5,9 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from "react";
+import YouTube from "react-youtube";
 import "../AudioPlayer.css"; // Import your custom styles
 
-// TODO: Still incomplete and not usable component. Idea is it will be totally custom audio player that gets stream from python backend
 interface AudioPlayerProps {
   title: string;
   artist: string;
@@ -22,9 +22,9 @@ type AudioPlayerControls = {
   seekTo: (time: number) => void;
 };
 
-const AudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
+const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
   ({ title, artist, albumArtUrl, videoId, onTimeUpdate }, ref) => {
-    const audioRef = useRef<HTMLAudioElement | null>(null);
+    const playerRef = useRef<any>(null);
     const playing = useRef(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -32,32 +32,40 @@ const AudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
       null,
     );
 
+    const opts = {
+      height: "0",
+      width: "0",
+      playerVars: {
+        autoplay: 0, // Disable autoplay
+        controls: 0, // Hide default controls
+      },
+    };
+
+    const onReady = (event: any) => {
+      playerRef.current = event.target;
+      if (playerRef.current) {
+        setDuration(playerRef.current.getDuration());
+      }
+    };
+
     const play = () => {
-      if (audioRef.current && !playing.current) {
-        audioRef.current.play();
+      if (playerRef.current && !playing.current) {
+        playerRef.current.playVideo();
         playing.current = true;
         updateCurrentTime(); // Start updating current time
       }
     };
 
     const pause = () => {
-      if (audioRef.current && playing.current) {
-        audioRef.current.pause();
+      if (playerRef.current && playing.current) {
+        playerRef.current.pauseVideo();
         playing.current = false;
       }
     };
 
     const seekTo = (newTime: number) => {
-      if (audioRef.current) {
-        audioRef.current.currentTime = newTime;
-        setCurrentTime(newTime);
-        console.log(
-          "Seeking to...",
-          newTime,
-          currentTime,
-          audioRef.current.currentTime,
-        );
-      }
+      playerRef.current?.seekTo(newTime);
+      setCurrentTime(newTime);
     };
 
     const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,14 +74,26 @@ const AudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
     };
 
     const updateCurrentTime = () => {
-      if (audioRef.current && playing.current) {
-        const time = Math.floor(audioRef.current.currentTime);
+      if (playerRef.current && playing.current) {
+        const time = Math.floor(playerRef.current.getCurrentTime());
         setCurrentTime(time);
         onTimeUpdate(time);
         setAnimationFrameId(requestAnimationFrame(updateCurrentTime));
       } else if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
         setAnimationFrameId(null);
+      }
+    };
+
+    const onStateChange = (event: any) => {
+      if (event.data === YouTube.PlayerState.PLAYING) {
+        playing.current = true;
+        updateCurrentTime(); // Start updating current time
+      } else if (event.data === YouTube.PlayerState.PAUSED) {
+        playing.current = false;
+      } else if (event.data === YouTube.PlayerState.ENDED) {
+        playing.current = false;
+        reset();
       }
     };
 
@@ -110,14 +130,6 @@ const AudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
       }
     };
 
-    useEffect(() => {
-      if (audioRef.current) {
-        audioRef.current.addEventListener("loadedmetadata", () => {
-          setDuration(audioRef.current!.duration);
-        });
-      }
-    }, [videoId]);
-
     const inputStyle = {
       background: `linear-gradient(to right, var(--color-fill) ${(currentTime / duration) * 100 || 0}%, var(--color-default) ${(currentTime / duration) * 100 || 0}%)`,
     };
@@ -130,10 +142,12 @@ const AudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
             <i>{artist}</i>
           </h5>
           <div className="audio-player__meta">
-            <audio
-              ref={audioRef}
-              src={`http://localhost:5000/stream/${videoId}^`}
-              onEnded={reset}
+            <YouTube
+              className="youtube-player"
+              videoId={videoId}
+              opts={opts}
+              onReady={onReady}
+              onStateChange={onStateChange}
             />
             <div className="controls">
               <div className="progress-container">
@@ -175,4 +189,4 @@ const AudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
   },
 );
 
-export default AudioPlayer;
+export default YoutubeAudioPlayer;

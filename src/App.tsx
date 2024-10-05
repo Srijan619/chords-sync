@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import AudioPlayer from "./components/AudioPlayer";
+import YoutubeAudioPlayer from "./components/YoutubeAudioPlayer";
 import LyricsDisplay from "./components/LyricsDisplay";
 import { SparshaSangeet, VananaMatra, HajarJanma } from "./testSongs";
 import "./App.css";
@@ -59,9 +59,12 @@ const App: React.FC = () => {
   useEffect(() => {
     const fetchChords = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/chords");
+        const response = await fetch(
+          "http://localhost:5000/api/chords/" + song.videoId,
+        );
         const data: ChordInfo[] = await response.json();
         const updatedLyrics = mapChordsToLyrics(song.lyrics, data);
+        console.log("🎸 Updated Lyrics with Chords", updatedLyrics);
         setSong((prevSong) => ({ ...prevSong, lyrics: updatedLyrics }));
       } catch (error) {
         console.error("Error fetching chords:", error);
@@ -103,7 +106,7 @@ const App: React.FC = () => {
         onSeekToAndPlay={seekToAndPlay}
         onSeekToAndLyricPlay={seekToAndLyricPlay}
       />
-      <AudioPlayer
+      <YoutubeAudioPlayer
         ref={audioPlayerRef}
         title={song.title}
         artist={song.artist}

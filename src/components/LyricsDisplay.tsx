@@ -38,7 +38,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
 
       setIsUserScrolling(true);
       if (lyricsRef.current) {
-        const { scrollTop, offsetHeight } = lyricsRef.current;
+        const { scrollTop } = lyricsRef.current;
         const lyricHeight = 30;
 
         // Calculate the index of the first visible lyric
