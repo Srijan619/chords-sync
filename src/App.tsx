@@ -22,7 +22,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const fetchSongs = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/songs/`);
+        const response = await fetch(`${API_URL}/api/songs`);
         const data: Song[] = await response.json();
         setSongs(data);
       } catch (error) {
