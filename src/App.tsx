@@ -155,7 +155,10 @@ const App: React.FC = () => {
       </div>
       {selectedSong && (
         <div className="floating-fixed-bottom-container">
-          <Artists allSongs={allSongs} />
+          <Artists
+            allSongs={allSongs}
+            onArtistFilterSelected={handleArtistFilterSelected}
+          />
           <YoutubeAudioPlayer
             ref={audioPlayerRef}
             song={selectedSong}

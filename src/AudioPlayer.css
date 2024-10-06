@@ -119,7 +119,7 @@
   .progress-container {
     margin: 0 0 3rem -0.5rem;
     position: absolute;
-    top: 8.5rem;
+    top: 6.5rem;
     width: 90vw;
     transition:
       width 1s,
