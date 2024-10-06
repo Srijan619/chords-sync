@@ -122,17 +122,21 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <ul>
-        {songs.map((song) => (
-          <li
-            key={song.id}
-            onClick={() => handleSongSelect(song)}
-            className={selectedSong?.id === song.id ? "song-selected" : ""}
-          >
-            {song.title} by {song.artist}
-          </li>
-        ))}
-      </ul>
+      <div className="songs-list">
+        <ul>
+          {songs.map((song) => (
+            <li
+              key={song.id}
+              onClick={() => handleSongSelect(song)}
+              className={selectedSong?.id === song.id ? "song-selected" : ""}
+            >
+              {song.title}
+              <br />
+              <i>{song.artist}</i>{" "}
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {selectedSong && (
         <>

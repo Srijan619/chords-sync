@@ -40,23 +40,26 @@
   right: 0;
 }
 
-ul {
-  list-style-type: none; /* Remove default list styling */
-  padding: 0; /* Remove default padding */
-  margin: 0; /* Remove default margin */
+.songs-list ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
-li {
-  padding: 10px 15px; /* Add some padding for better touch targets */
-  cursor: pointer; /* Show pointer cursor on hover */
-  transition: background-color 0.3s; /* Smooth transition for background color */
+.songs-list li {
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-li:hover {
-  background-color: var(--color-fill); /* Highlight color on hover */
+.songs-list li:hover {
+  background-color: var(--color-fill);
 }
 
+.songs-list i {
+  font-size: 0.7rem;
+}
 .song-selected {
-  background-color: var(--color-fill); /* Highlight for selected song */
-  color: white; /* Change text color for better contrast */
+  background-color: var(--color-fill);
+  color: white;
 }
