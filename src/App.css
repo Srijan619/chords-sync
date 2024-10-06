@@ -6,7 +6,6 @@
 }
 
 .lyrics-container {
-  max-height: 600px;
   overflow-y: scroll;
   padding: 10px;
   border-radius: 5px;
@@ -58,8 +57,19 @@
 
 .songs-list i {
   font-size: 0.7rem;
+  width: max-content;
+  height: fit-content;
+  max-height: 60vh;
+  overflow-y: scroll;
+  transition:
+    padding 1s,
+    height 1s,
+    ease-in-out 1s;
 }
 .song-selected {
   background-color: var(--color-fill);
-  color: white;
+  padding: 0.4rem;
+  transition:
+    padding 1s,
+    ease-in-out 1s;
 }
