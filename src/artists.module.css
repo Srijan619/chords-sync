@@ -9,6 +9,9 @@
   width: 100%;
 }
 
+.artist-list::-webkit-scrollbar {
+  display: none;
+}
 .artist-item {
   display: flex;
   flex-direction: column;
