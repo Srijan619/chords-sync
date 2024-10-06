@@ -51,3 +51,7 @@
   position: fixed;
   bottom: 0;
 }
+
+button {
+  font-family: inherit;
+}

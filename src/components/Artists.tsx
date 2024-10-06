@@ -12,6 +12,7 @@ const Artists: React.FC<ArtistListProps> = ({
   onArtistFilterSelected,
 }) => {
   const [selectedArtist, setSelectedArtist] = useState("");
+  const [showArtists, setShowArtists] = useState(false);
 
   const handleArtistClick = (artist: string) => {
     console.log("Artist clicked..", artist);
@@ -23,18 +24,40 @@ const Artists: React.FC<ArtistListProps> = ({
       setSelectedArtist(artist);
     }
   };
+
+  const handleShowArtists = () => {
+    setShowArtists(!showArtists);
+  };
+
+  const hideArtistsStyle = {
+    transform: "rotate(270deg)",
+    left: "-2rem",
+    bottom: "2rem",
+    background: "var(--color-fill)",
+  };
+
   return (
-    <div className={styles["artist-list"]}>
-      {allSongs.map(({ artist, album_art_url, id }) => (
-        <div
-          key={id}
-          className={`${styles["artist-item"]} ${selectedArtist && selectedArtist === artist ? styles["artist-item-selected"] : ""}`}
-          onClick={() => handleArtistClick(artist)}
-        >
-          <img src={album_art_url} alt={artist} />
-          <p>{artist}</p>
-        </div>
-      ))}
+    <div className={styles["artist-list-container"]}>
+      <button
+        className={styles["show-artists"]}
+        style={!showArtists ? {} : hideArtistsStyle}
+        onClick={handleShowArtists}
+      >
+        {showArtists ? "Hide" : "Show"} artists....
+      </button>
+      <div className={styles["artist-list"]}>
+        {showArtists &&
+          allSongs.map(({ artist, album_art_url, id }) => (
+            <div
+              key={id}
+              className={`${styles["artist-item"]} ${selectedArtist && selectedArtist === artist ? styles["artist-item-selected"] : ""}`}
+              onClick={() => handleArtistClick(artist)}
+            >
+              <img src={album_art_url} alt={artist} />
+              <p>{artist}</p>
+            </div>
+          ))}
+      </div>
     </div>
   );
 };

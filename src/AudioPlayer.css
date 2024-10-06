@@ -2,6 +2,7 @@
   background: #f0f0f0;
   padding: 30px;
   border-radius: 3px;
+  position: relative;
 }
 
 .audio-player__episode_title {
@@ -119,7 +120,7 @@
   .progress-container {
     margin: 0 0 3rem -0.5rem;
     position: absolute;
-    top: 6.5rem;
+    top: 0;
     width: 90vw;
     transition:
       width 1s,

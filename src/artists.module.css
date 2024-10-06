@@ -1,22 +1,37 @@
+.artist-list-container {
+  position: relative;
+  min-height: 1rem;
+  display: flex;
+  cursor: pointer;
+  width: 100%;
+}
+
 .artist-list {
+  display: flex;
+  flex-direction: row;
+  margin-left: 2rem;
+  width: 100%;
   cursor: pointer;
   display: flex;
   overflow-x: auto;
   white-space: nowrap;
   scroll-behavior: smooth;
   padding: 10px;
-  gap: 2rem;
-  width: 100%;
+  gap: 1rem;
+  transition:
+    height 0.1s,
+    width 1s,
+    ease-in-out 0.5s;
 }
-
 .artist-list::-webkit-scrollbar {
   display: none;
 }
+
 .artist-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 10rem;
+  min-width: 8rem;
   padding: 10px;
   background-color: #f7f7f7;
   border-radius: 8px;
@@ -27,10 +42,14 @@
 }
 
 .artist-item-selected {
-  background-color: var(--color-fill) !important;
+  background-color: #555 !important;
   transition:
     background-color 0.1s,
     ease-in-out 0.1s;
+}
+
+.artist-item-selected p {
+  color: white !important;
 }
 
 .artist-item img {
@@ -70,4 +89,28 @@
       height 1s,
       ease-in-out 1s;
   }
+}
+
+.show-artists {
+  position: absolute;
+  bottom: -0.2rem;
+  left: 0.1rem;
+  z-index: 1000;
+  background-color: transparent;
+  cursor: pointer;
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  border: none;
+  border-radius: 0.2rem;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  box-shadow: 0 0px 4px 0 var(--color-default);
+  transition:
+    display 0.5s,
+    ease-in-out 0.5s;
+}
+
+.show-artists:hover {
+  background-color: var(--color-fill);
 }
