@@ -1,7 +1,7 @@
 .App {
   text-align: center;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
 }
 
@@ -39,37 +39,15 @@
   right: 0;
 }
 
-.songs-list ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
+.side-by-side-songs-lyrics-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
-.songs-list li {
-  padding: 10px 15px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.songs-list li:hover {
-  background-color: var(--color-fill);
-}
-
-.songs-list i {
-  font-size: 0.7rem;
-  width: max-content;
-  height: fit-content;
-  max-height: 60vh;
-  overflow-y: scroll;
-  transition:
-    padding 1s,
-    height 1s,
-    ease-in-out 1s;
-}
-.song-selected {
-  background-color: var(--color-fill);
-  padding: 0.4rem;
-  transition:
-    padding 1s,
-    ease-in-out 1s;
+.floating-fixed-bottom-container {
+  width: 100vw;
+  margin-top: 10rem;
+  position: fixed;
+  bottom: 0;
 }

@@ -149,65 +149,58 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
     };
 
     return (
-      <div className="container">
-        <div className="audio-player">
-          <div className="audio-meta-container">
-            <h3 className="audio-player__episode_title">{title}</h3>
-            <p
-              className={`audio-player__title ${selectedArtist ? "artist-selected" : ""}`}
-              onClick={handleOnArtistClick}
-            >
-              <i>{artist}</i>
-            </p>
-            {tempo && (
-              <b className="audio-player__title">Tempo: {tempo.tempo} BPM</b>
-            )}
-            {key?.key_name && (
-              <b className="audio-player__title">Key: {key.key_name}</b>
-            )}
-          </div>
-          <div className="audio-player__meta">
-            <YouTube
-              className="youtube-player-hidden"
-              videoId={video_id}
-              opts={opts}
-              onReady={onReady}
-              onStateChange={onStateChange}
-            />
-            <div className="controls">
-              <div className="progress-container">
-                <button
-                  className="audio-player__play"
-                  onClick={handlePlayPause}
-                >
-                  {playing.current ? (
-                    <span className="audio-player__pause-button"></span>
-                  ) : (
-                    <span className="audio-player__play-button"></span>
-                  )}
-                </button>
-                <div className="time-display-current">
-                  {format(currentTime)}
-                </div>
+      <div className="audio-player">
+        <div className="audio-meta-container">
+          <h3 className="audio-player__episode_title">{title}</h3>
+          <p
+            className={`audio-player__title ${selectedArtist ? "artist-selected" : ""}`}
+            onClick={handleOnArtistClick}
+          >
+            <i>{artist}</i>
+          </p>
+          {tempo && (
+            <b className="audio-player__title">Tempo: {tempo.tempo} BPM</b>
+          )}
+          {key?.key_name && (
+            <b className="audio-player__title">Key: {key.key_name}</b>
+          )}
+        </div>
+        <div className="audio-player__meta">
+          <YouTube
+            className="youtube-player-hidden"
+            videoId={video_id}
+            opts={opts}
+            onReady={onReady}
+            onStateChange={onStateChange}
+          />
+          <div className="controls">
+            <div className="progress-container">
+              <button className="audio-player__play" onClick={handlePlayPause}>
+                {playing.current ? (
+                  <span className="audio-player__pause-button"></span>
+                ) : (
+                  <span className="audio-player__play-button"></span>
+                )}
+              </button>
+              <div className="time-display-current">{format(currentTime)}</div>
 
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  value={
-                    currentTime && duration ? (currentTime / duration) * 100 : 0
-                  }
-                  onChange={handleSeek}
-                  className="seek-bar"
-                  style={inputStyle}
-                />
-                <div className="time-display-duration">{format(duration)}</div>
-              </div>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={
+                  currentTime && duration ? (currentTime / duration) * 100 : 0
+                }
+                onChange={handleSeek}
+                className="seek-bar"
+                style={inputStyle}
+              />
+              <div className="time-display-duration">{format(duration)}</div>
             </div>
-            <a href="#" className="artwork">
-              <img src={`${album_art_url}`} alt="Audio Artwork" />
-            </a>
           </div>
+          <a href="#" className="artwork">
+            <img src={`${album_art_url}`} alt="Audio Artwork" />
+          </a>
         </div>
       </div>
     );

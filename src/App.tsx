@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import YoutubeAudioPlayer from "./components/YoutubeAudioPlayer";
 import LyricsDisplay from "./components/LyricsDisplay";
+import Songs from "./components/Songs";
+import Artists from "./components/Artists";
 // import { SparshaSangeet, VananaMatra, HajarJanma } from "./testSongs";
 import "./App.css";
 import type { ChordInfo, SongInfoApiResponse, Song, Lyric } from "./types";
@@ -136,37 +138,31 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <div className="songs-list">
-        <ul>
-          {filteredSongs.map((song) => (
-            <li
-              key={song.id}
-              onClick={() => handleSongSelect(song)}
-              className={selectedSong?.id === song.id ? "song-selected" : ""}
-            >
-              {song.title}
-              <br />
-              <i>{song.artist}</i>{" "}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {selectedSong && (
-        <>
+      <div className="side-by-side-songs-lyrics-container">
+        <Songs
+          filteredSongs={filteredSongs}
+          selectedSong={selectedSong}
+          handleSongSelect={handleSongSelect}
+        />
+        {selectedSong && (
           <LyricsDisplay
             lyrics={selectedSong.lyrics}
             currentLine={currentLine}
             onSeekToAndPlay={seekToAndPlay}
             onSeekToAndLyricPlay={seekToAndLyricPlay}
           />
+        )}
+      </div>
+      {selectedSong && (
+        <div className="floating-fixed-bottom-container">
+          <Artists allSongs={allSongs} />
           <YoutubeAudioPlayer
             ref={audioPlayerRef}
             song={selectedSong}
             onTimeUpdate={handleTimeUpdate}
             onArtistFilterSelected={handleArtistFilterSelected}
           />
-        </>
+        </div>
       )}
     </div>
   );
