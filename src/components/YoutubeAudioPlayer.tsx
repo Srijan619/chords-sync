@@ -17,6 +17,7 @@ interface AudioPlayerProps {
 type AudioPlayerControls = {
   play: () => void;
   pause: () => void;
+  handlePlayPause: () => void;
   seekTo: (time: number) => void;
 };
 
@@ -35,8 +36,8 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
       height: "0",
       width: "0",
       playerVars: {
-        autoplay: 0, // Disable autoplay
-        controls: 0, // Hide default controls
+        autoplay: 1,
+        controls: 0,
       },
     };
 
@@ -110,6 +111,7 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
     useImperativeHandle(ref, () => ({
       play,
       pause,
+      handlePlayPause,
       seekTo,
     }));
 

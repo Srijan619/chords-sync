@@ -16,6 +16,7 @@ const App: React.FC = () => {
   const audioPlayerRef = useRef<{
     play: () => void;
     pause: () => void;
+    handlePlayPause: () => void;
     seekTo: (newTime: number) => void;
   }>(null);
 
@@ -114,7 +115,7 @@ const App: React.FC = () => {
     );
     setSelectedSong({
       ...song,
-      lyrics: formattedLyrics, // Add the formatted lyrics directly
+      lyrics: formattedLyrics,
     });
     setCurrentLine(0);
     setCurrentTime(0);

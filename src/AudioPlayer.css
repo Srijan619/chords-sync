@@ -152,7 +152,7 @@
   color: #777;
 }
 .youtube-player-hidden {
-  display: none;
+  /* display: none;*/
 }
 /*Seek bar customization*/
 
