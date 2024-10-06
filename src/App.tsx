@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import YoutubeAudioPlayer from "./components/YoutubeAudioPlayer";
 import LyricsDisplay from "./components/LyricsDisplay";
-import { SparshaSangeet, VananaMatra, HajarJanma } from "./testSongs";
+// import { SparshaSangeet, VananaMatra, HajarJanma } from "./testSongs";
 import "./App.css";
 import type { ChordInfo, SongInfoApiResponse, Song, Lyric } from "./types";
 import { calculateLyricsWithTimes } from "./utils/transformLyrics";
 
+const API_URL = import.meta.env.VITE_API_URL;
 const LYRIC_LATENCY = -0.5; // TODO: Make configurable
 const App: React.FC = () => {
   const [selectedSong, setSelectedSong] = useState<Song | null>(null); // Use state for selected song
@@ -21,7 +22,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const fetchSongs = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/songs");
+        const response = await fetch(`${API_URL}/api/songs`);
         const data: Song[] = await response.json();
         setSongs(data);
       } catch (error) {
@@ -52,7 +53,7 @@ const App: React.FC = () => {
     const fetchChords = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/chords/" + selectedSong.video_id,
+          `${API_URL}/api/chords` + selectedSong.video_id,
         );
         const data: SongInfoApiResponse = await response.json();
 
