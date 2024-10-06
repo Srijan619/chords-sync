@@ -31,8 +31,8 @@ const Artists: React.FC<ArtistListProps> = ({
 
   const hideArtistsStyle = {
     transform: "rotate(270deg)",
-    left: "-2rem",
-    bottom: "2rem",
+    left: "-4rem",
+    bottom: "0rem",
     background: "var(--color-fill)",
   };
 

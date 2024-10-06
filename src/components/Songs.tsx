@@ -15,7 +15,7 @@ const SongList: React.FC<SongListProps> = ({
 }) => {
   return (
     <div className={styles["songs-list"]}>
-      {" "}
+      <b>All songs</b>
       <ul>
         {filteredSongs.map((song) => (
           <li
@@ -25,6 +25,11 @@ const SongList: React.FC<SongListProps> = ({
               selectedSong?.id === song.id ? styles["song-selected"] : ""
             }
           >
+            {selectedSong?.id === song.id && (
+              <div className={styles["song-selected-now-playing"]}>
+                Playing now
+              </div>
+            )}
             {song.title}
             <br />
             <i>{song.artist}</i>

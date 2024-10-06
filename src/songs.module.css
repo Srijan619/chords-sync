@@ -1,13 +1,29 @@
+.songs-list {
+  position: relative;
+  max-height: 60vh;
+  overflow-y: scroll;
+}
+
+.songs-list::-webkit-scrollbar {
+  display: none;
+}
+
 .songs-list ul {
+  max-height: 60vh;
   list-style-type: none;
   padding: 0;
   margin: 0;
+  height: fit-content;
 }
 
 .songs-list li {
+  font-size: smaller;
   padding: 10px 15px;
   cursor: pointer;
   transition: background-color 0.3s;
+  border-radius: 0.3rem;
+  border: 1px solid #555;
+  margin: 0.5rem;
 }
 
 .songs-list li:hover {
@@ -15,9 +31,7 @@
 }
 
 .songs-list i {
-  font-size: 0.7rem;
-  width: max-content;
-  height: fit-content;
+  color: rgba(255, 255, 255, 0.5);
   max-height: 60vh;
   overflow-y: scroll;
   transition:
@@ -31,4 +45,9 @@
   transition:
     padding 1s,
     ease-in-out 1s;
+}
+.song-selected-now-playing {
+  margin: 0.5rem;
+  font-weight: bold;
+  text-wrap: nowrap;
 }
