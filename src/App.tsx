@@ -10,7 +10,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 const LYRIC_LATENCY = -0.5; // TODO: Make configurable
 const App: React.FC = () => {
   const [selectedSong, setSelectedSong] = useState<Song | null>(null); // Use state for selected song
-  const [songs, setSongs] = useState<Song[]>([]);
+  const [allSongs, setAllSongs] = useState<Song[]>([]);
+  const [filteredSongs, setFilteredSongs] = useState<Song[]>([]);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [currentLine, setCurrentLine] = useState<number>(0);
   const audioPlayerRef = useRef<{
@@ -25,7 +26,8 @@ const App: React.FC = () => {
       try {
         const response = await fetch(`${API_URL}/api/songs`);
         const data: Song[] = await response.json();
-        setSongs(data);
+        setAllSongs(data);
+        setFilteredSongs(data);
       } catch (error) {
         console.error("Error fetching songs:", error);
       }
@@ -121,11 +123,22 @@ const App: React.FC = () => {
     setCurrentTime(0);
   };
 
+  const handleArtistFilterSelected = (artistToFilter: string) => {
+    if (!artistToFilter) {
+      setFilteredSongs(allSongs);
+    } else {
+      const filteredSongs = allSongs.filter(
+        (song: Song) => song.artist === artistToFilter,
+      );
+      setFilteredSongs(filteredSongs);
+    }
+  };
+
   return (
     <div className="App">
       <div className="songs-list">
         <ul>
-          {songs.map((song) => (
+          {filteredSongs.map((song) => (
             <li
               key={song.id}
               onClick={() => handleSongSelect(song)}
@@ -151,6 +164,7 @@ const App: React.FC = () => {
             ref={audioPlayerRef}
             song={selectedSong}
             onTimeUpdate={handleTimeUpdate}
+            onArtistFilterSelected={handleArtistFilterSelected}
           />
         </>
       )}

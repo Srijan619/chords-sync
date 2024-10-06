@@ -12,6 +12,7 @@ import { Song } from "../types";
 interface AudioPlayerProps {
   song: Song;
   onTimeUpdate: (currentTime: number) => void;
+  onArtistFilterSelected: (artistFilterSelected: string) => void;
 }
 
 type AudioPlayerControls = {
@@ -22,7 +23,7 @@ type AudioPlayerControls = {
 };
 
 const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
-  ({ song, onTimeUpdate }, ref) => {
+  ({ song, onTimeUpdate, onArtistFilterSelected }, ref) => {
     const { title, artist, album_art_url, video_id, key, tempo } = song;
     const playerRef = useRef<any>(null);
     const playing = useRef(false);
@@ -32,6 +33,7 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
       null,
     );
 
+    const [selectedArtist, setSelectedArtist] = useState("");
     const opts = {
       height: "0",
       width: "0",
@@ -131,6 +133,17 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
       }
     };
 
+    const handleOnArtistClick = () => {
+      if (selectedArtist) {
+        onArtistFilterSelected("");
+        setSelectedArtist("");
+      } else {
+        console.log("Artist selected...", artist);
+        onArtistFilterSelected(artist);
+        setSelectedArtist(artist);
+      }
+    };
+
     const inputStyle = {
       background: `linear-gradient(to right, var(--color-fill) ${(currentTime / duration) * 100 || 0}%, var(--color-default) ${(currentTime / duration) * 100 || 0}%)`,
     };
@@ -140,7 +153,10 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
         <div className="audio-player">
           <div className="audio-meta-container">
             <h3 className="audio-player__episode_title">{title}</h3>
-            <p className="audio-player__title">
+            <p
+              className={`audio-player__title ${selectedArtist ? "artist-selected" : ""}`}
+              onClick={handleOnArtistClick}
+            >
               <i>{artist}</i>
             </p>
             {tempo && (

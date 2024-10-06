@@ -23,6 +23,8 @@
 }
 
 .audio-player__title {
+  width: fit-content;
+  cursor: pointer;
   display: flex;
   margin-top: 0.5rem;
   text-transform: uppercase;
@@ -30,7 +32,16 @@
   color: #555;
   transition:
     display 1s,
-    width 1s,
+    padding 1s,
+    ease-in-out 1s;
+}
+
+.artist-selected {
+  background-color: var(--color-fill);
+  padding: 0.4rem;
+  border-radius: 1rem;
+  transition:
+    padding 1s,
     ease-in-out 1s;
 }
 
