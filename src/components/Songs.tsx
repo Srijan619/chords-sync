@@ -1,6 +1,5 @@
 import React from "react";
 import { Song } from "../types";
-import MusicBeat from "./MusicBeat";
 import styles from "../songs.module.css";
 
 interface SongListProps {
