@@ -1,0 +1,36 @@
+@keyframes beat {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-10px);
+    opacity: 0.8;
+  }
+}
+
+.music-beat {
+  width: 0.4rem;
+  height: 0.4rem;
+  margin: 0 5px;
+  background-color: var(--color-default);
+  border-radius: 50%;
+  display: inline-block;
+  animation: beat 1s infinite ease-in-out;
+}
+
+.music-beat:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.music-beat:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.music-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  margin-top: 2rem;
+}

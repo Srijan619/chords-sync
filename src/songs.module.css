@@ -18,20 +18,31 @@
 
 .songs-list li {
   font-size: smaller;
-  padding: 10px 15px;
+  padding: 0.2rem;
   cursor: pointer;
   transition: background-color 0.3s;
   border-radius: 0.3rem;
-  border: 1px solid #555;
+  box-shadow:
+    rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+    rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
   margin: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+.songs-list img {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+  flex: 1;
+}
 .songs-list li:hover {
   background-color: var(--color-fill);
 }
 
 .songs-list i {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgb(141 137 137);
   max-height: 60vh;
   overflow-y: scroll;
   transition:
@@ -50,4 +61,8 @@
   margin: 0.5rem;
   font-weight: bold;
   text-wrap: nowrap;
+}
+.song-title-artist-container {
+  margin-left: 0.2rem;
+  flex: 2;
 }

@@ -37,6 +37,8 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
       if (isAutoScrolling) return; // Ignore when it's auto-scrolling
 
       setIsUserScrolling(true);
+      console.log("Handle scroll...");
+
       if (lyricsRef.current) {
         const { scrollTop } = lyricsRef.current;
         const lyricHeight = 30;

@@ -1,5 +1,6 @@
 import React from "react";
 import { Song } from "../types";
+import MusicBeat from "./MusicBeat";
 import styles from "../songs.module.css";
 
 interface SongListProps {
@@ -25,14 +26,18 @@ const SongList: React.FC<SongListProps> = ({
               selectedSong?.id === song.id ? styles["song-selected"] : ""
             }
           >
-            {selectedSong?.id === song.id && (
-              <div className={styles["song-selected-now-playing"]}>
-                Playing now
-              </div>
-            )}
-            {song.title}
-            <br />
-            <i>{song.artist}</i>
+            {/* {selectedSong?.id === song.id && ( */}
+            {/*   <div className={styles["song-selected-now-playing"]}> */}
+            {/*     Playing now */}
+            {/*     <MusicBeat /> */}
+            {/*   </div> */}
+            {/* )} */}
+            <img src={song.album_art_url} alt={song.artist} />
+            <div className={styles["song-title-artist-container"]}>
+              <span>{song.title}</span>
+              <br />
+              <i>{song.artist}</i>
+            </div>
           </li>
         ))}
       </ul>
