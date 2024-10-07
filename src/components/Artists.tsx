@@ -15,7 +15,6 @@ const Artists: React.FC<ArtistListProps> = ({
   const [showArtists, setShowArtists] = useState(false);
 
   const handleArtistClick = (artist: string) => {
-    console.log("Artist clicked..", artist);
     if (selectedArtist && selectedArtist === artist) {
       onArtistFilterSelected("");
       setSelectedArtist("");
@@ -27,6 +26,17 @@ const Artists: React.FC<ArtistListProps> = ({
 
   const handleShowArtists = () => {
     setShowArtists(!showArtists);
+  };
+
+  const filteredDuplicateArtistsFromAllSongs = (): Song[] => {
+    const uniqueArtists = allSongs?.reduce((acc: Song[], song: Song) => {
+      if (!acc.some((existingSong) => existingSong.artist === song.artist)) {
+        acc.push(song);
+      }
+      return acc;
+    }, []);
+
+    return uniqueArtists;
   };
 
   const hideArtistsStyle = {
@@ -47,16 +57,18 @@ const Artists: React.FC<ArtistListProps> = ({
       </button>
       <div className={styles["artist-list"]}>
         {showArtists &&
-          allSongs.map(({ artist, album_art_url, id }) => (
-            <div
-              key={id}
-              className={`${styles["artist-item"]} ${selectedArtist && selectedArtist === artist ? styles["artist-item-selected"] : ""}`}
-              onClick={() => handleArtistClick(artist)}
-            >
-              <img src={album_art_url} alt={artist} />
-              <p>{artist}</p>
-            </div>
-          ))}
+          filteredDuplicateArtistsFromAllSongs().map(
+            ({ artist, album_art_url, id }) => (
+              <div
+                key={id}
+                className={`${styles["artist-item"]} ${selectedArtist && selectedArtist === artist ? styles["artist-item-selected"] : ""}`}
+                onClick={() => handleArtistClick(artist)}
+              >
+                <img src={album_art_url} alt={artist} />
+                <p>{artist}</p>
+              </div>
+            ),
+          )}
       </div>
     </div>
   );
