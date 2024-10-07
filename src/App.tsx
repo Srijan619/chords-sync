@@ -166,7 +166,9 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      {isSongsLoading && <div>Songs are loading...</div>}
+      {isSongsLoading && (
+        <div>Fresh songs are being loaded in the background...</div>
+      )}
       {isErrorLoadingSongs && <div>Error loading songs, try to refresh...</div>}
       <div className="side-by-side-songs-lyrics-container">
         <Songs
