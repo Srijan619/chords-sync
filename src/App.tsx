@@ -8,6 +8,7 @@ import "./App.css";
 import type { ChordInfo, SongInfoApiResponse, Song, Lyric } from "./types";
 import { calculateLyricsWithTimes } from "./utils/transformLyrics";
 
+const LOCAL_STORAGE_KEY = "cachedSongs";
 const API_URL = import.meta.env.VITE_API_URL;
 const LYRIC_LATENCY = -0.5; // TODO: Make configurable
 const App: React.FC = () => {
@@ -17,6 +18,7 @@ const App: React.FC = () => {
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [currentLine, setCurrentLine] = useState<number>(0);
   const [isSongsLoading, setIsSongsLoading] = useState(false);
+  const [isErrorLoadingSongs, setIsErrorLoadingSongs] = useState(false);
   const audioPlayerRef = useRef<{
     play: () => void;
     pause: () => void;
@@ -24,22 +26,9 @@ const App: React.FC = () => {
     seekTo: (newTime: number) => void;
   }>(null);
 
+  // Fetch Songs
   useEffect(() => {
-    const fetchSongs = async () => {
-      setIsSongsLoading(true);
-      try {
-        const response = await fetch(`${API_URL}/api/songs`);
-        const data: Song[] = await response.json();
-        setAllSongs(data);
-        setFilteredSongs(data);
-        handleSongSelect(data[0]); // Select first song by default after fetching.... probably in future need to select last played? TODO ?
-        setIsSongsLoading(false);
-      } catch (error) {
-        console.error("Error fetching songs:", error);
-      }
-    };
-
-    fetchSongs();
+    useCacheAndFetchData();
   }, []);
 
   useEffect(() => {
@@ -59,6 +48,7 @@ const App: React.FC = () => {
   useEffect(() => {
     if (!selectedSong) return; // Do nothing if no song is selected
 
+    // @ts-ignore
     const fetchChords = async () => {
       try {
         const response = await fetch(
@@ -89,6 +79,40 @@ const App: React.FC = () => {
 
     //fetchChords();
   }, [selectedSong]);
+
+  // cache songs for slow API response
+
+  const useCacheAndFetchData = () => {
+    const cachedSongs = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (cachedSongs) {
+      updateFetchedDataState(JSON.parse(cachedSongs));
+      fetchSongs();
+    } else {
+      fetchSongs();
+    }
+  };
+
+  const fetchSongs = async () => {
+    setIsSongsLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/api/songs`);
+      const data: Song[] = await response.json();
+      updateFetchedDataState(data);
+
+      // Save to cache
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+    } catch (error) {
+      console.error("Error fetching songs:", error);
+      setIsErrorLoadingSongs(true);
+    }
+  };
+
+  const updateFetchedDataState = (data: Song[]) => {
+    setAllSongs(data);
+    setFilteredSongs(data);
+    handleSongSelect(data[0]); // Select first song by default after fetching.... probably in future need to select last played? TODO ?
+    setIsSongsLoading(false);
+  };
 
   const handleTimeUpdate = (time: number) => setCurrentTime(time);
 
@@ -143,6 +167,7 @@ const App: React.FC = () => {
   return (
     <div className="App">
       {isSongsLoading && <div>Songs are loading...</div>}
+      {isErrorLoadingSongs && <div>Error loading songs, try to refresh...</div>}
       <div className="side-by-side-songs-lyrics-container">
         <Songs
           filteredSongs={filteredSongs}
