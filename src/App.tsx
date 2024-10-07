@@ -16,6 +16,7 @@ const App: React.FC = () => {
   const [filteredSongs, setFilteredSongs] = useState<Song[]>([]);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [currentLine, setCurrentLine] = useState<number>(0);
+  const [isSongsLoading, setIsSongsLoading] = useState(false);
   const audioPlayerRef = useRef<{
     play: () => void;
     pause: () => void;
@@ -25,12 +26,14 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const fetchSongs = async () => {
+      setIsSongsLoading(true);
       try {
         const response = await fetch(`${API_URL}/api/songs`);
         const data: Song[] = await response.json();
         setAllSongs(data);
         setFilteredSongs(data);
         handleSongSelect(data[0]); // Select first song by default after fetching.... probably in future need to select last played? TODO ?
+        setIsSongsLoading(false);
       } catch (error) {
         console.error("Error fetching songs:", error);
       }
@@ -139,6 +142,7 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
+      {isSongsLoading && <div>Songs are loading...</div>}
       <div className="side-by-side-songs-lyrics-container">
         <Songs
           filteredSongs={filteredSongs}
