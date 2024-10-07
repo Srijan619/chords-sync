@@ -30,6 +30,7 @@ const App: React.FC = () => {
         const data: Song[] = await response.json();
         setAllSongs(data);
         setFilteredSongs(data);
+        handleSongSelect(data[0]); // Select first song by default after fetching.... probably in future need to select last played? TODO ?
       } catch (error) {
         console.error("Error fetching songs:", error);
       }

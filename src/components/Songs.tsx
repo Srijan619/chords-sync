@@ -15,7 +15,6 @@ const SongList: React.FC<SongListProps> = ({
 }) => {
   return (
     <div className={styles["songs-list"]}>
-      <b>All songs</b>
       <ul>
         {filteredSongs.map((song) => (
           <li

@@ -83,7 +83,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
 
   return (
     <div className="lyrics-container" ref={lyricsRef}>
-      {lyrics.map((lyric, index) => (
+      {lyrics?.map((lyric, index) => (
         <p
           key={index}
           className={`lyric-line ${index === currentLine ? "active" : ""}`}
