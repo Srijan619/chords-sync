@@ -87,7 +87,7 @@ const App: React.FC = () => {
       }
     };
 
-    fetchChords();
+    //fetchChords();
   }, [selectedSong]);
 
   const handleTimeUpdate = (time: number) => setCurrentTime(time);
