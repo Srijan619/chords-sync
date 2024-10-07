@@ -11,6 +11,7 @@ import { Song } from "../types";
 
 interface AudioPlayerProps {
   song: Song;
+  currentTime: number;
   onTimeUpdate: (currentTime: number) => void;
   onArtistFilterSelected: (artistFilterSelected: string) => void;
 }
@@ -23,11 +24,10 @@ type AudioPlayerControls = {
 };
 
 const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
-  ({ song, onTimeUpdate, onArtistFilterSelected }, ref) => {
+  ({ song, currentTime, onTimeUpdate, onArtistFilterSelected }, ref) => {
     const { title, artist, album_art_url, video_id, key, tempo } = song;
     const playerRef = useRef<any>(null);
     const playing = useRef(false);
-    const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [animationFrameId, setAnimationFrameId] = useState<number | null>(
       null,
@@ -38,7 +38,6 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
       height: "0",
       width: "0",
       playerVars: {
-        autoplay: 1,
         controls: 0,
       },
     };
@@ -47,11 +46,13 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
       playerRef.current = event.target;
       if (playerRef.current) {
         setDuration(playerRef.current.getDuration());
+        playerRef.current.playVideo(); // Auto play..using autoplay from player vars is not recommended as it gets restricted with some browser's policy
       }
     };
 
     const play = () => {
       if (playerRef.current && !playing.current) {
+        seekTo(currentTime || 0); // Either seek to current playing time or always start at 0
         playerRef.current.playVideo();
         playing.current = true;
         updateCurrentTime(); // Start updating current time
@@ -67,7 +68,6 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
 
     const seekTo = (newTime: number) => {
       playerRef.current?.seekTo(newTime);
-      setCurrentTime(newTime);
     };
 
     const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +78,6 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
     const updateCurrentTime = () => {
       if (playerRef.current && playing.current) {
         const time = Math.floor(playerRef.current.getCurrentTime());
-        setCurrentTime(time);
         onTimeUpdate(time);
         setAnimationFrameId(requestAnimationFrame(updateCurrentTime));
       } else if (animationFrameId) {
@@ -95,7 +94,6 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
         playing.current = false;
       } else if (event.data === YouTube.PlayerState.ENDED) {
         playing.current = false;
-        reset();
       }
     };
 
@@ -103,10 +101,6 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
       const minutes = Math.floor(time / 60);
       const seconds = Math.floor(time % 60);
       return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-    };
-
-    const reset = () => {
-      setCurrentTime(0);
     };
 
     // Expose play and pause methods to parent component
@@ -138,7 +132,6 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
         onArtistFilterSelected("");
         setSelectedArtist("");
       } else {
-        console.log("Artist selected...", artist);
         onArtistFilterSelected(artist);
         setSelectedArtist(artist);
       }

@@ -8,7 +8,8 @@ import "./App.css";
 import type { ChordInfo, SongInfoApiResponse, Song, Lyric } from "./types";
 import { calculateLyricsWithTimes } from "./utils/transformLyrics";
 
-const LOCAL_STORAGE_KEY = "cachedSongs";
+const LOCAL_STORAGE_CACHED_SONGS = "cachedSongs";
+const LOCAL_STORAGE_NOW_PLAYING = "nowPlayingMeta";
 const API_URL = import.meta.env.VITE_API_URL;
 const LYRIC_LATENCY = -0.5; // TODO: Make configurable
 const App: React.FC = () => {
@@ -42,6 +43,8 @@ const App: React.FC = () => {
     if (line !== currentLine && line >= 0) {
       setCurrentLine(line);
     }
+    // Save status of now playing song to cache (regularly when time, line and selectedSong changes)
+    saveNowPlayingSongStatus();
   }, [currentTime, currentLine, selectedSong]);
 
   // Fetch chords for the selected song
@@ -83,13 +86,15 @@ const App: React.FC = () => {
   // cache songs for slow API response
 
   const useCacheAndFetchData = () => {
-    const cachedSongs = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const cachedSongs = localStorage.getItem(LOCAL_STORAGE_CACHED_SONGS);
     if (cachedSongs) {
       updateFetchedDataState(JSON.parse(cachedSongs));
       fetchSongs();
     } else {
       fetchSongs();
     }
+
+    restoreSession(); // Try and restore now playing session
   };
 
   const fetchSongs = async () => {
@@ -100,7 +105,7 @@ const App: React.FC = () => {
       updateFetchedDataState(data);
 
       // Save to cache
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+      localStorage.setItem(LOCAL_STORAGE_CACHED_SONGS, JSON.stringify(data));
     } catch (error) {
       console.error("Error fetching songs:", error);
       setIsErrorLoadingSongs(true);
@@ -110,7 +115,6 @@ const App: React.FC = () => {
   const updateFetchedDataState = (data: Song[]) => {
     setAllSongs(data);
     setFilteredSongs(data);
-    handleSongSelect(data[0]); // Select first song by default after fetching.... probably in future need to select last played? TODO ?
     setIsSongsLoading(false);
   };
 
@@ -164,6 +168,27 @@ const App: React.FC = () => {
     }
   };
 
+  // Track last played song and its detail
+
+  const saveNowPlayingSongStatus = () => {
+    const meta = {
+      selectedSong: selectedSong,
+      currentTime: currentTime,
+      currentLine: currentLine,
+    };
+    localStorage.setItem(LOCAL_STORAGE_NOW_PLAYING, JSON.stringify(meta));
+  };
+
+  const restoreSession = () => {
+    const nowPlayingMeta = localStorage.getItem(LOCAL_STORAGE_NOW_PLAYING);
+    if (nowPlayingMeta) {
+      const jsonNowPlayingMeta = JSON.parse(nowPlayingMeta);
+      setSelectedSong(jsonNowPlayingMeta.selectedSong);
+      setCurrentLine(jsonNowPlayingMeta.currentLine);
+      setCurrentTime(jsonNowPlayingMeta.currentTime);
+    }
+  };
+
   return (
     <div className="App">
       {isSongsLoading && (
@@ -194,6 +219,7 @@ const App: React.FC = () => {
           <YoutubeAudioPlayer
             ref={audioPlayerRef}
             song={selectedSong}
+            currentTime={currentTime}
             onTimeUpdate={handleTimeUpdate}
             onArtistFilterSelected={handleArtistFilterSelected}
           />
