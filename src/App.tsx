@@ -109,6 +109,7 @@ const App: React.FC = () => {
     } catch (error) {
       console.error("Error fetching songs:", error);
       setIsErrorLoadingSongs(true);
+      setIsSongsLoading(false);
     }
   };
 
