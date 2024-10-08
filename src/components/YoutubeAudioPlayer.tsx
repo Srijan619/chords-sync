@@ -56,7 +56,6 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
         seekTo(currentTime || 0); // Either seek to current playing time or always start at 0
         playerRef.current.playVideo();
         playing.current = true;
-        updateCurrentTime(); // Start updating current time
       }
     };
 
