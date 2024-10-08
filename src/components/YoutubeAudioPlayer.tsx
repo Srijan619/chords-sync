@@ -38,6 +38,7 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
       height: "0",
       width: "0",
       playerVars: {
+        autoplay: 1,
         controls: 0,
       },
     };
