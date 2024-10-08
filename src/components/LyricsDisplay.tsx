@@ -89,7 +89,8 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
           className={`lyric-line ${index === currentLine ? "active" : ""}`}
           onClick={() => onSeekToAndLyricPlay(lyric)}
         >
-          {lyric.text} - {lyric.chord?.chord_name}
+          {lyric.text}
+          {lyric.chord?.chord_name && `- ${lyric.chord.chord_name}`}
         </p>
       ))}
     </div>
