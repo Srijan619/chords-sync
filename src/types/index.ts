@@ -36,6 +36,8 @@ export interface Song {
   tempo?: TempoInfo;
   key?: KeyInfo;
   time_signature?: TimeSignatureInfo;
+  lyrics_starting_time: number;
+  lyrics_time_interval: number;
 }
 
 export interface SongInfoApiResponse {
@@ -43,4 +45,6 @@ export interface SongInfoApiResponse {
   tempo: TempoInfo;
   key: KeyInfo;
   time_signature: TimeSignatureInfo;
+  lyrics_starting_time: number;
+  lyrics_time_interval: number;
 }

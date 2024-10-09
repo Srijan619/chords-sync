@@ -146,8 +146,8 @@ const App: React.FC = () => {
 
   const handleSongSelect = (song: Song) => {
     const formattedLyrics = calculateLyricsWithTimes(
-      0,
-      4,
+      song.lyrics_starting_time,
+      song.lyrics_time_interval,
       song.lyrics.toString(),
     );
     setSelectedSong({
