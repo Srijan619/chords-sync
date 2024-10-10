@@ -12,6 +12,7 @@ import { Song } from "../types";
 interface AudioPlayerProps {
   song: Song;
   currentTime: number;
+  onPlayNext: () => void;
   onTimeUpdate: (currentTime: number) => void;
   onArtistFilterSelected: (artistFilterSelected: string) => void;
 }
@@ -24,7 +25,10 @@ type AudioPlayerControls = {
 };
 
 const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
-  ({ song, currentTime, onTimeUpdate, onArtistFilterSelected }, ref) => {
+  (
+    { song, currentTime, onPlayNext, onTimeUpdate, onArtistFilterSelected },
+    ref,
+  ) => {
     const { title, artist, album_art_url, video_id, key, tempo } = song;
     const playerRef = useRef<any>(null);
     const playing = useRef(false);
@@ -94,6 +98,7 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
         playing.current = false;
       } else if (event.data === YouTube.PlayerState.ENDED) {
         playing.current = false;
+        onPlayNext();
       }
     };
 

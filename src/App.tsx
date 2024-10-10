@@ -190,6 +190,22 @@ const App: React.FC = () => {
     }
   };
 
+  const handlePlayNextSong = () => {
+    const currentIndex = allSongs.findIndex(
+      (song: Song) => song.id === selectedSong?.id,
+    );
+
+    // If the current song is not found or it's the last song, do nothing or loop back to the first song
+    if (currentIndex === -1) {
+      handleSongSelect(allSongs[0]);
+    } else {
+      const nextIndex =
+        currentIndex + 1 >= allSongs.length ? 0 : currentIndex + 1;
+      handleSongSelect(allSongs[nextIndex]);
+    }
+
+    audioPlayerRef.current?.handlePlayPause();
+  };
   return (
     <div className="App">
       {isSongsLoading && (
@@ -221,6 +237,7 @@ const App: React.FC = () => {
             ref={audioPlayerRef}
             song={selectedSong}
             currentTime={currentTime}
+            onPlayNext={handlePlayNextSong}
             onTimeUpdate={handleTimeUpdate}
             onArtistFilterSelected={handleArtistFilterSelected}
           />
