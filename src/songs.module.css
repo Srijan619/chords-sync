@@ -1,6 +1,6 @@
 .songs-list {
   position: relative;
-  max-height: 60vh;
+  max-height: 55vh;
   max-width: fit-content;
   min-width: fit-content;
   overflow-y: scroll;
@@ -12,7 +12,7 @@
 }
 
 .songs-list ul {
-  max-height: 60vh;
+  max-height: 55vh;
   list-style-type: none;
   padding: 0;
   margin: 0;
@@ -40,7 +40,7 @@
 
 .songs-list i {
   color: rgb(141 137 137);
-  max-height: 60vh;
+  max-height: 55vh;
   overflow-y: scroll;
   transition:
     padding 1s,
