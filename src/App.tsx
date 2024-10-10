@@ -102,10 +102,27 @@ const App: React.FC = () => {
     try {
       const response = await fetch(`${API_URL}/api/songs`);
       const data: Song[] = await response.json();
-      updateFetchedDataState(data);
+
+      // Format the songs before updating state or caching
+      const formattedSongs = data.map((song) => {
+        const formattedLyrics = calculateLyricsWithTimes(
+          song.lyrics_starting_time,
+          song.lyrics_time_interval,
+          song.lyrics.toString(),
+        );
+        return {
+          ...song,
+          lyrics: formattedLyrics,
+        };
+      });
+
+      updateFetchedDataState(formattedSongs);
 
       // Save to cache
-      localStorage.setItem(LOCAL_STORAGE_CACHED_SONGS, JSON.stringify(data));
+      localStorage.setItem(
+        LOCAL_STORAGE_CACHED_SONGS,
+        JSON.stringify(formattedSongs),
+      );
     } catch (error) {
       console.error("Error fetching songs:", error);
       setIsErrorLoadingSongs(true);
@@ -145,15 +162,7 @@ const App: React.FC = () => {
     });
 
   const handleSongSelect = (song: Song) => {
-    const formattedLyrics = calculateLyricsWithTimes(
-      song.lyrics_starting_time,
-      song.lyrics_time_interval,
-      song.lyrics.toString(),
-    );
-    setSelectedSong({
-      ...song,
-      lyrics: formattedLyrics,
-    });
+    setSelectedSong(song);
     setCurrentLine(0);
     setCurrentTime(0);
   };
