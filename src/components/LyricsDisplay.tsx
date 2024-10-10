@@ -23,10 +23,16 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
   useEffect(() => {
     if (!isUserScrolling) {
       setIsAutoScrolling(true);
-      lyricsRef.current?.scrollTo({
-        top: currentLine * 30,
-        behavior: "smooth",
-      });
+
+      const currentLyricElement = lyricsRef.current?.children[currentLine];
+
+      if (currentLyricElement) {
+        currentLyricElement.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+
       setTimeout(() => setIsAutoScrolling(false), 500); // Finish auto-scroll
     }
   }, [currentLine]);
