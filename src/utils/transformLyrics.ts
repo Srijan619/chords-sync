@@ -8,7 +8,7 @@ export const calculateLyricsWithTimes = (
   // Split the lyric string into an array and trim each entry
   const lyrics = lyric
     .split(",")
-    .map((line) => line.trim())
+    .map((line) => line)
     .filter((line) => line); // Remove empty strings
   console.log("Lyrics..", lyric);
   return lyrics.map((text, index) => {

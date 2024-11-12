@@ -20,6 +20,7 @@ const App: React.FC = () => {
   const [currentLine, setCurrentLine] = useState<number>(0);
   const [isSongsLoading, setIsSongsLoading] = useState(false);
   const [isErrorLoadingSongs, setIsErrorLoadingSongs] = useState(false);
+  const [isChordFetched, setIsChordFetched] = useState(false);
   const audioPlayerRef = useRef<{
     play: () => void;
     pause: () => void;
@@ -51,6 +52,7 @@ const App: React.FC = () => {
   useEffect(() => {
     if (!selectedSong) return; // Do nothing if no song is selected
 
+    if (isChordFetched) return;
     // @ts-ignore
     const fetchChords = async () => {
       try {
@@ -75,12 +77,14 @@ const App: React.FC = () => {
             }
             : null,
         );
+        setIsChordFetched(true);
       } catch (error) {
         console.error("Error fetching chords:", error);
+        setIsChordFetched(true);
       }
     };
 
-    //fetchChords();
+    fetchChords();
   }, [selectedSong]);
 
   // cache songs for slow API response
@@ -165,6 +169,7 @@ const App: React.FC = () => {
     setSelectedSong(song);
     setCurrentLine(0);
     setCurrentTime(0);
+    setIsChordFetched(false);
   };
 
   const handleArtistFilterSelected = (artistToFilter: string) => {
