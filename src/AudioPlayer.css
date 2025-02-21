@@ -5,6 +5,13 @@
   position: relative;
 }
 
+.audio-meta-container {
+  display: flex;
+  flex-direction: column;
+  justify-items: flex-start;
+  align-items: flex-start;
+}
+
 .audio-player__episode_title {
   display: flex;
   font-size: 28px;

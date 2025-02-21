@@ -7,6 +7,7 @@ import Artists from "./components/Artists";
 import "./App.css";
 import type { ChordInfo, SongInfoApiResponse, Song, Lyric } from "./types";
 import { calculateLyricsWithTimes } from "./utils/transformLyrics";
+import { createPortal } from "react-dom";
 
 const LOCAL_STORAGE_CACHED_SONGS = "cachedSongs";
 const LOCAL_STORAGE_NOW_PLAYING = "nowPlayingMeta";
@@ -21,6 +22,8 @@ const App: React.FC = () => {
   const [isSongsLoading, setIsSongsLoading] = useState(false);
   const [isErrorLoadingSongs, setIsErrorLoadingSongs] = useState(false);
   const [isChordFetched, setIsChordFetched] = useState(false);
+  const [lyricsOnlyMode, setLyricsOnlyMode] = useState(false);
+
   const audioPlayerRef = useRef<{
     play: () => void;
     pause: () => void;
@@ -220,43 +223,80 @@ const App: React.FC = () => {
 
     audioPlayerRef.current?.handlePlayPause();
   };
+
+  const toggleLyricsOnlyMode = () => {
+    setLyricsOnlyMode((prev) => !prev);
+  };
+
   return (
     <div className="App">
       {isSongsLoading && (
         <div>Fresh songs are being loaded in the background...</div>
       )}
       {isErrorLoadingSongs && <div>Error loading songs, try to refresh...</div>}
-      <div className="side-by-side-songs-lyrics-container">
-        <Songs
-          filteredSongs={filteredSongs}
-          selectedSong={selectedSong}
-          handleSongSelect={handleSongSelect}
-        />
-        {selectedSong && (
-          <LyricsDisplay
-            lyrics={selectedSong.lyrics}
-            currentLine={currentLine}
-            onSeekToAndPlay={seekToAndPlay}
-            onSeekToAndLyricPlay={seekToAndLyricPlay}
+
+      <button className="fullscreen-btn" onClick={toggleLyricsOnlyMode}>
+        {lyricsOnlyMode ? "⛶" : "⤢"}
+      </button>
+
+      {/* Portal Fullscreen Lyrics - Always Mounted */}
+      {createPortal(
+        <div
+          className={`full-screen-mode ${lyricsOnlyMode ? "visible" : "hidden"}`}
+        >
+          {selectedSong && (
+            <>
+              <LyricsDisplay
+                lyrics={selectedSong.lyrics}
+                currentLine={currentLine}
+                onSeekToAndPlay={seekToAndPlay}
+                onSeekToAndLyricPlay={seekToAndLyricPlay}
+              />
+              <button className="fullscreen-btn" onClick={toggleLyricsOnlyMode}>
+                {lyricsOnlyMode ? "⛶" : "⤢"}
+              </button>
+            </>
+          )}
+        </div>,
+        document.body,
+      )}
+
+      {/* Non-Fullscreen Mode */}
+      <div
+        className={`non-fullscreen-mode ${lyricsOnlyMode ? "hidden" : "visible"}`}
+      >
+        <div className="side-by-side-songs-lyrics-container">
+          <Songs
+            filteredSongs={filteredSongs}
+            selectedSong={selectedSong}
+            handleSongSelect={handleSongSelect}
           />
+          {selectedSong && (
+            <LyricsDisplay
+              lyrics={selectedSong.lyrics}
+              currentLine={currentLine}
+              onSeekToAndPlay={seekToAndPlay}
+              onSeekToAndLyricPlay={seekToAndLyricPlay}
+            />
+          )}
+        </div>
+        {selectedSong && (
+          <div className="floating-fixed-bottom-container">
+            <Artists
+              allSongs={allSongs}
+              onArtistFilterSelected={handleArtistFilterSelected}
+            />
+            <YoutubeAudioPlayer
+              ref={audioPlayerRef}
+              song={selectedSong}
+              currentTime={currentTime}
+              onPlayNext={handlePlayNextSong}
+              onTimeUpdate={handleTimeUpdate}
+              onArtistFilterSelected={handleArtistFilterSelected}
+            />
+          </div>
         )}
       </div>
-      {selectedSong && (
-        <div className="floating-fixed-bottom-container">
-          <Artists
-            allSongs={allSongs}
-            onArtistFilterSelected={handleArtistFilterSelected}
-          />
-          <YoutubeAudioPlayer
-            ref={audioPlayerRef}
-            song={selectedSong}
-            currentTime={currentTime}
-            onPlayNext={handlePlayNextSong}
-            onTimeUpdate={handleTimeUpdate}
-            onArtistFilterSelected={handleArtistFilterSelected}
-          />
-        </div>
-      )}
     </div>
   );
 };
