@@ -7,6 +7,7 @@
 
 .lyrics-container {
   overflow-y: scroll;
+  overflow-x: hidden;
   padding: 10px;
   border-radius: 5px;
   width: 100%;
@@ -88,7 +89,8 @@
   opacity: 0;
   transform: scale(0.95);
   text-align: center;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
   pointer-events: none; /* Prevent interaction when hidden */
 }
 
