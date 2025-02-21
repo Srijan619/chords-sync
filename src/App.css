@@ -68,6 +68,7 @@
 
 .full-screen-mode * {
   max-height: unset !important;
+  font-size: 30px !important;
 }
 
 .full-screen-mode {

@@ -24,6 +24,7 @@ const App: React.FC = () => {
   const [isChordFetched, setIsChordFetched] = useState(false);
   const [lyricsOnlyMode, setLyricsOnlyMode] = useState(false);
 
+  const fullScreenRef = useRef<HTMLDivElement>(null);
   const audioPlayerRef = useRef<{
     play: () => void;
     pause: () => void;
@@ -225,8 +226,26 @@ const App: React.FC = () => {
   };
 
   const toggleLyricsOnlyMode = () => {
+    if (!lyricsOnlyMode) {
+      fullScreenRef.current?.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+
     setLyricsOnlyMode((prev) => !prev);
   };
+
+  // Sync state if user manually exits fullscreen
+  useEffect(() => {
+    const handleFullScreenChange = () => {
+      if (!document.fullscreenElement) {
+        setLyricsOnlyMode(false);
+      }
+    };
+    document.addEventListener("fullscreenchange", handleFullScreenChange);
+    return () =>
+      document.removeEventListener("fullscreenchange", handleFullScreenChange);
+  }, []);
 
   return (
     <div className="App">
@@ -242,6 +261,7 @@ const App: React.FC = () => {
       {/* Portal Fullscreen Lyrics - Always Mounted */}
       {createPortal(
         <div
+          ref={fullScreenRef}
           className={`full-screen-mode ${lyricsOnlyMode ? "visible" : "hidden"}`}
         >
           {selectedSong && (
