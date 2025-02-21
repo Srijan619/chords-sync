@@ -57,7 +57,7 @@
 .fullscreen-btn {
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 3rem !important;
   cursor: pointer;
   color: white;
   position: absolute;
