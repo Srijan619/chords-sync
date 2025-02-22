@@ -39,8 +39,9 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
 
   // Add scroll event listener to update timestamp based on manual scroll
   useEffect(() => {
+    return; // TODO: This feature is buggy as hell...should probably introduce new flag to switch between auto and manual mode
+
     const handleScroll = () => {
-      return; // TODO: This feature is buggy as hell...should probably introduce new flag to switch between auto and manual mode
       setIsAutoScrolling(false);
       setIsUserScrolling(true);
 
