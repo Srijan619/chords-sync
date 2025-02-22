@@ -1,4 +1,4 @@
-import React, {
+import {
   useRef,
   useState,
   useEffect,
@@ -39,7 +39,6 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
       null,
     );
     const [isPlaying, setIsPlaying] = useState(false);
-    const [isSeeking, setIsSeeking] = useState(false);
 
     const [selectedArtist, setSelectedArtist] = useState("");
     const opts = {
