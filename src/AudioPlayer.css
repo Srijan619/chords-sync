@@ -145,6 +145,16 @@
     margin-top: 2rem;
   }
 }
+
+@media (max-width: 300px) {
+  .audio-player {
+    height: 0;
+  }
+  .song-albumb-art {
+    display: none;
+  }
+}
+
 .seek-bar {
   width: 100%;
 }

@@ -51,12 +51,6 @@ const AudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
       if (audioRef.current) {
         audioRef.current.currentTime = newTime;
         setCurrentTime(newTime);
-        console.log(
-          "Seeking to...",
-          newTime,
-          currentTime,
-          audioRef.current.currentTime,
-        );
       }
     };
 

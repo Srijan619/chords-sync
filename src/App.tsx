@@ -30,6 +30,7 @@ const App: React.FC = () => {
     pause: () => void;
     handlePlayPause: () => void;
     seekTo: (newTime: number) => void;
+    playOnlyIfPaused: () => void;
   }>(null);
 
   // Fetch Songs
@@ -81,9 +82,9 @@ const App: React.FC = () => {
             }
             : null,
         );
-        setIsChordFetched(true);
       } catch (error) {
         console.error("Error fetching chords:", error);
+      } finally {
         setIsChordFetched(true);
       }
     };
@@ -133,6 +134,7 @@ const App: React.FC = () => {
       );
     } catch (error) {
       console.error("Error fetching songs:", error);
+    } finally {
       setIsErrorLoadingSongs(true);
       setIsSongsLoading(false);
     }
@@ -149,7 +151,7 @@ const App: React.FC = () => {
   const seekToAndLyricPlay = (lyric: Lyric) => {
     setCurrentTime(lyric.lyricalTime);
     audioPlayerRef.current?.seekTo(lyric.lyricalTime);
-    audioPlayerRef.current?.play();
+    audioPlayerRef.current?.playOnlyIfPaused();
   };
 
   const seekToAndPlay = (lyricalTime: number) => {

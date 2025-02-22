@@ -30,7 +30,11 @@ const SongList: React.FC<SongListProps> = ({
             {/*     <MusicBeat /> */}
             {/*   </div> */}
             {/* )} */}
-            <img src={song.album_art_url} alt={song.artist} />
+            <img
+              className="song-albumb-art"
+              src={song.album_art_url}
+              alt={song.artist}
+            />
             <div className={styles["song-title-artist-container"]}>
               <span>{song.title}</span>
               <br />

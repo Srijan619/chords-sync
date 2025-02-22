@@ -22,6 +22,7 @@ type AudioPlayerControls = {
   pause: () => void;
   handlePlayPause: () => void;
   seekTo: (time: number) => void;
+  playOnlyIfPaused: () => void;
 };
 
 const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
@@ -70,6 +71,13 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
       }
     };
 
+    const playOnlyIfPaused = () => {
+      if (playerRef.current && !playing.current) {
+        playerRef.current.playVideo();
+        playing.current = true;
+      }
+    };
+
     const seekTo = (newTime: number) => {
       playerRef.current?.seekTo(newTime);
     };
@@ -114,6 +122,7 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
       pause,
       handlePlayPause,
       seekTo,
+      playOnlyIfPaused,
     }));
 
     useEffect(() => {
