@@ -146,12 +146,15 @@
   }
 }
 
-@media (max-width: 300px) {
+@media (max-height: 300px) {
   .audio-player {
     height: 0;
   }
   .song-albumb-art {
     display: none;
+  }
+  * {
+    font-size: 1rem !important;
   }
 }
 
