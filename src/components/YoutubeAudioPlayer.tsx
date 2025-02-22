@@ -8,6 +8,7 @@ import React, {
 import YouTube from "react-youtube";
 import "../AudioPlayer.css"; // Import your custom styles
 import { Song } from "../types";
+import { motion } from "framer-motion";
 
 interface AudioPlayerProps {
   song: Song;
@@ -32,11 +33,11 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
   ) => {
     const { title, artist, album_art_url, video_id, key, tempo } = song;
     const playerRef = useRef<any>(null);
-    const playing = useRef(false);
     const [duration, setDuration] = useState(0);
     const [animationFrameId, setAnimationFrameId] = useState<number | null>(
       null,
     );
+    const [isPlaying, setIsPlaying] = useState(false);
 
     const [selectedArtist, setSelectedArtist] = useState("");
     const opts = {
@@ -57,24 +58,24 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
     };
 
     const play = () => {
-      if (playerRef.current && !playing.current) {
+      if (playerRef.current && !isPlaying) {
         seekTo(currentTime || 0); // Either seek to current playing time or always start at 0
         playerRef.current.playVideo();
-        playing.current = true;
+        setIsPlaying(true);
       }
     };
 
     const pause = () => {
-      if (playerRef.current && playing.current) {
+      if (playerRef.current && isPlaying) {
         playerRef.current.pauseVideo();
-        playing.current = false;
+        setIsPlaying(false);
       }
     };
 
     const playOnlyIfPaused = () => {
-      if (playerRef.current && !playing.current) {
+      if (playerRef.current && !isPlaying) {
         playerRef.current.playVideo();
-        playing.current = true;
+        setIsPlaying(true);
       }
     };
 
@@ -88,7 +89,7 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
     };
 
     const updateCurrentTime = () => {
-      if (playerRef.current && playing.current) {
+      if (playerRef.current && isPlaying) {
         const time = Math.floor(playerRef.current.getCurrentTime());
         onTimeUpdate(time);
         setAnimationFrameId(requestAnimationFrame(updateCurrentTime));
@@ -100,12 +101,12 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
 
     const onStateChange = (event: any) => {
       if (event.data === YouTube.PlayerState.PLAYING) {
-        playing.current = true;
+        setIsPlaying(true);
         updateCurrentTime(); // Start updating current time
       } else if (event.data === YouTube.PlayerState.PAUSED) {
-        playing.current = false;
+        setIsPlaying(false);
       } else if (event.data === YouTube.PlayerState.ENDED) {
-        playing.current = false;
+        setIsPlaying(false);
         onPlayNext();
       }
     };
@@ -134,7 +135,7 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
     }, [animationFrameId]);
 
     const handlePlayPause = () => {
-      if (playing.current) {
+      if (isPlaying) {
         pause();
       } else {
         play();
@@ -182,13 +183,22 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
           />
           <div className="controls">
             <div className="progress-container">
-              <button className="audio-player__play" onClick={handlePlayPause}>
-                {playing.current ? (
+              <motion.button
+                onClick={handlePlayPause}
+                className="audio-player__play"
+                whileTap={{ scale: 0.9 }} // Press-down effect
+                animate={{
+                  scale: isPlaying ? 1.2 : 1,
+                  opacity: isPlaying ? 1 : 0.8,
+                }} // Smooth transition
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                {isPlaying ? (
                   <span className="audio-player__pause-button"></span>
                 ) : (
                   <span className="audio-player__play-button"></span>
                 )}
-              </button>
+              </motion.button>
               <div className="time-display-current">{format(currentTime)}</div>
 
               <input
