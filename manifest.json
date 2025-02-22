@@ -2,7 +2,7 @@
   "name": "Lyricly",
   "short_name": "Lyricly",
   "description": "Lyrics to songs side by side",
-  "start_url": "/",
+  "start_url": "https://srijan619.github.io/chords-sync",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
