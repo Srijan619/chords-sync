@@ -32,7 +32,7 @@
   color: var(--color-fill);
   font-weight: bold;
   opacity: 1;
-  transform: scale(1.2);
+  transform: scale(var(--scale-factor));
 }
 
 .video-container {
@@ -69,7 +69,11 @@
 
 .full-screen-mode * {
   max-height: 100% !important;
-  font-size: 30px !important;
+  font-size: clamp(
+    var(--min-font-size),
+    2rem + 1vw,
+    var(--max-font-size)
+  ) !important;
 }
 
 .full-screen-mode {

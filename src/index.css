@@ -17,6 +17,10 @@
   --color-hover: rgba(255, 255, 255, 0.7);
   --color-active: rgba(255, 255, 255, 1);
   --color-black: #000000;
+  --min-font-size: 1.5rem;
+  --max-font-size: 4rem;
+
+  --scale-factor: clamp(1, 1.2, 4);
 }
 
 @media (prefers-color-scheme: light) {
