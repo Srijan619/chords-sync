@@ -38,56 +38,56 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
   }, [currentLine]);
 
   // Add scroll event listener to update timestamp based on manual scroll
-  useEffect(() => {
-    return; // TODO: This feature is buggy as hell...should probably introduce new flag to switch between auto and manual mode
+  // TODO: This feature is buggy as hell...should probably introduce new flag to switch between auto and manual mode
 
-    const handleScroll = () => {
-      setIsAutoScrolling(false);
-      setIsUserScrolling(true);
-
-      if (lyricsRef.current) {
-        const { scrollTop } = lyricsRef.current;
-        const lyricHeight = 30;
-
-        // Calculate the index of the first visible lyric
-        const index = Math.floor(scrollTop / lyricHeight);
-
-        // Get the current and next lyrics for interpolation
-        const currentLyric = lyrics[index];
-        const nextLyric = lyrics[index + 1];
-
-        if (currentLyric && nextLyric) {
-          const scrollPositionInLyric = scrollTop - index * lyricHeight;
-          const progress = scrollPositionInLyric / lyricHeight; // Scroll progress within the lyric
-
-          // Interpolate between the current and next lyric time
-          const interpolatedTime =
-            currentLyric.lyricalTime +
-            progress * (nextLyric.lyricalTime - currentLyric.lyricalTime);
-
-          // Call the seek function with the interpolated time
-          onSeekToAndPlay(interpolatedTime);
-        }
-      }
-
-      //Reset after a short period to allow auto-scrolling again
-      setTimeout(() => {
-        setIsUserScrolling(false);
-        setIsAutoScrolling(true);
-      }, SCROLL_TIMEOUT);
-    };
-
-    const lyricsElement = lyricsRef.current;
-    if (lyricsElement) {
-      lyricsElement.addEventListener("scroll", handleScroll);
-    }
-
-    return () => {
-      if (lyricsElement) {
-        lyricsElement.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, [lyrics, onSeekToAndPlay, isAutoScrolling]);
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     setIsAutoScrolling(false);
+  //     setIsUserScrolling(true);
+  //
+  //     if (lyricsRef.current) {
+  //       const { scrollTop } = lyricsRef.current;
+  //       const lyricHeight = 30;
+  //
+  //       // Calculate the index of the first visible lyric
+  //       const index = Math.floor(scrollTop / lyricHeight);
+  //
+  //       // Get the current and next lyrics for interpolation
+  //       const currentLyric = lyrics[index];
+  //       const nextLyric = lyrics[index + 1];
+  //
+  //       if (currentLyric && nextLyric) {
+  //         const scrollPositionInLyric = scrollTop - index * lyricHeight;
+  //         const progress = scrollPositionInLyric / lyricHeight; // Scroll progress within the lyric
+  //
+  //         // Interpolate between the current and next lyric time
+  //         const interpolatedTime =
+  //           currentLyric.lyricalTime +
+  //           progress * (nextLyric.lyricalTime - currentLyric.lyricalTime);
+  //
+  //         // Call the seek function with the interpolated time
+  //         onSeekToAndPlay(interpolatedTime);
+  //       }
+  //     }
+  //
+  //     //Reset after a short period to allow auto-scrolling again
+  //     setTimeout(() => {
+  //       setIsUserScrolling(false);
+  //       setIsAutoScrolling(true);
+  //     }, SCROLL_TIMEOUT);
+  //   };
+  //
+  //   const lyricsElement = lyricsRef.current;
+  //   if (lyricsElement) {
+  //     lyricsElement.addEventListener("scroll", handleScroll);
+  //   }
+  //
+  //   return () => {
+  //     if (lyricsElement) {
+  //       lyricsElement.removeEventListener("scroll", handleScroll);
+  //     }
+  //   };
+  // }, [lyrics, onSeekToAndPlay, isAutoScrolling]);
 
   return (
     <div className="lyrics-container" ref={lyricsRef}>
