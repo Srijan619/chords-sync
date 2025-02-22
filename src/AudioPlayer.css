@@ -123,7 +123,7 @@
   margin: 0 10px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 500px) {
   .progress-container {
     margin: 0 0 3rem -0.5rem;
     position: absolute;
@@ -143,6 +143,9 @@
   }
   .audio-player__episode_title {
     margin-top: 2rem;
+  }
+  * {
+    font-size: unset !important;
   }
 }
 
