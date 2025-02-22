@@ -1,8 +1,7 @@
 .songs-list {
   position: relative;
   max-height: 55vh;
-  max-width: fit-content;
-  min-width: fit-content;
+  max-width: 20vh;
   overflow-y: scroll;
   flex: 1;
 }
@@ -62,4 +61,7 @@
 .song-title-artist-container {
   margin-left: 0.2rem;
   flex: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

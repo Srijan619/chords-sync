@@ -137,6 +137,9 @@ const App: React.FC = () => {
     } finally {
       setIsErrorLoadingSongs(true);
       setIsSongsLoading(false);
+      setTimeout(() => {
+        setIsErrorLoadingSongs(false); // Auto hide error loading container after a second
+      }, 1000);
     }
   };
 
