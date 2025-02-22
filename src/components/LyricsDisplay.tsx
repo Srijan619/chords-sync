@@ -17,6 +17,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
   const lyricsRef = useRef<HTMLDivElement | null>(null);
   const [isAutoScrolling, setIsAutoScrolling] = useState<boolean>(false);
   const [isUserScrolling, setIsUserScrolling] = useState<boolean>(false);
+  const SCROLL_TIMEOUT = 5000; // 5 seconds to allow manual scrolling before re-enabling auto-scroll
 
   // Scroll to the active lyric line (Auto Scroll)
   useEffect(() => {
@@ -38,9 +39,15 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
 
   // Add scroll event listener to update timestamp based on manual scroll
   useEffect(() => {
+    let scrollTimeout: ReturnType<typeof setTimeout>;
     const handleScroll = () => {
       setIsAutoScrolling(false);
       setIsUserScrolling(true);
+
+      // Clear any existing timeout
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
 
       if (lyricsRef.current) {
         const { scrollTop } = lyricsRef.current;
@@ -66,6 +73,12 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
           onSeekToAndPlay(interpolatedTime);
         }
       }
+
+      //Reset after a short period to allow auto-scrolling again
+      scrollTimeout = setTimeout(() => {
+        setIsUserScrolling(false);
+        setIsAutoScrolling(true);
+      }, SCROLL_TIMEOUT);
     };
 
     const lyricsElement = lyricsRef.current;
@@ -77,6 +90,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
       if (lyricsElement) {
         lyricsElement.removeEventListener("scroll", handleScroll);
       }
+      clearTimeout(scrollTimeout);
     };
   }, [lyrics, onSeekToAndPlay, isAutoScrolling]);
 
