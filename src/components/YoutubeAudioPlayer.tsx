@@ -6,6 +6,7 @@ import React, {
   useImperativeHandle,
 } from "react";
 import YouTube from "react-youtube";
+import SeekBar from "./SeekBar";
 import "../AudioPlayer.css"; // Import your custom styles
 import { Song } from "../types";
 import { motion } from "framer-motion";
@@ -38,6 +39,7 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
       null,
     );
     const [isPlaying, setIsPlaying] = useState(false);
+    const [isSeeking, setIsSeeking] = useState(false);
 
     const [selectedArtist, setSelectedArtist] = useState("");
     const opts = {
@@ -81,11 +83,6 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
 
     const seekTo = (newTime: number) => {
       playerRef.current?.seekTo(newTime);
-    };
-
-    const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newTime = (Number(e.target.value) / 100) * duration;
-      seekTo(newTime);
     };
 
     const updateCurrentTime = () => {
@@ -152,10 +149,6 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
       }
     };
 
-    const inputStyle = {
-      background: `linear-gradient(to right, var(--color-fill) ${(currentTime / duration) * 100 || 0}%, var(--color-default) ${(currentTime / duration) * 100 || 0}%)`,
-    };
-
     return (
       <div className="audio-player">
         <div className="audio-meta-container">
@@ -200,17 +193,10 @@ const YoutubeAudioPlayer = forwardRef<AudioPlayerControls, AudioPlayerProps>(
                 )}
               </motion.button>
               <div className="time-display-current">{format(currentTime)}</div>
-
-              <input
-                type="range"
-                min={0}
-                max={100}
-                value={
-                  currentTime && duration ? (currentTime / duration) * 100 : 0
-                }
-                onChange={handleSeek}
-                className="seek-bar"
-                style={inputStyle}
+              <SeekBar
+                currentTime={currentTime}
+                duration={duration}
+                seekTo={seekTo}
               />
               <div className="time-display-duration">{format(duration)}</div>
             </div>
