@@ -44,11 +44,6 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
       setIsAutoScrolling(false);
       setIsUserScrolling(true);
 
-      // Clear any existing timeout
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
-      }
-
       if (lyricsRef.current) {
         const { scrollTop } = lyricsRef.current;
         const lyricHeight = 30;
@@ -75,7 +70,7 @@ const LyricsDisplay: React.FC<LyricsDisplayProps> = ({
       }
 
       //Reset after a short period to allow auto-scrolling again
-      scrollTimeout = setTimeout(() => {
+      setTimeout(() => {
         setIsUserScrolling(false);
         setIsAutoScrolling(true);
       }, SCROLL_TIMEOUT);
